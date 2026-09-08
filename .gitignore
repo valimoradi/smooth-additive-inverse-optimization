@@ -1,0 +1,88 @@
+# =============================================================
+# Patient data and large experimental artifacts
+# =============================================================
+# Downloaded patient data (~252 GB)
+portpy_prostate/prostate_data/
+
+# Forward and inverse experiment outputs (~3 GB)
+portpy_experiment/results/
+portpy_experiment/cache/
+refactored/results/
+refactored/data_files/
+
+# Workspace archive (~660 MB of old experiments, scripts, logs).
+# Kept locally for reference; not under version control.
+archive/
+
+# Downloaded copyrighted reference PDFs for literature review.
+# Kept locally; not under version control.
+literature_review/
+
+# Pickled / numpy artifacts at any depth
+*.npy
+*.pkl
+
+# =============================================================
+# Old test folders (pre-refactor — kept locally, never published)
+# =============================================================
+142 -first test/
+142 -second test/
+142 - first test -second try/
+142 - first test -second try copy/
+142 - first test -second try copy 2/
+linear test/
+
+# =============================================================
+# Paper source — the LaTeX lives in a separate paper repo.
+# Comment this out if you want to ship the .tex with the code.
+# =============================================================
+paper/
+
+# =============================================================
+# Generated images and logs
+# =============================================================
+*.png
+*.log
+
+# =============================================================
+# Editor / IDE
+# =============================================================
+.vscode/
+.idea/
+
+# =============================================================
+# Backups and stray scratch files
+# =============================================================
+*.bak
+*.swp
+*.tmp
+
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+.venv/
+venv/
+
+# =============================================================
+# LaTeX build artifacts (in case paper/ is un-ignored)
+# =============================================================
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.toc
+*.synctex.gz
+texput.log
+
+# Local-only generated data for the synthetic healthcare study (code+results are in release_code/, data stays local)
+**/patient_data_high_std/
+**/patient_data_clean_high_std/
+**/ml_data_high_std/
+
+# Result figures inside the release staging area ARE versioned (override global *.png)
+!release_code/**/*.png

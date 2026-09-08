@@ -1,0 +1,3 @@
+seed: 1019963
+Objective Value: 0.00706101576711742
+Solver Status: optimal

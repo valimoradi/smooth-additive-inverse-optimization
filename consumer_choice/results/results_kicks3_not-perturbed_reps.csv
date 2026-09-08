@@ -1,0 +1,801 @@
+rep,training_size,model,RelL2,beta_star
+0,20,Convex only,0.2339,
+0,40,Convex only,0.1856,
+0,60,Convex only,0.1977,
+0,80,Convex only,0.1828,
+0,100,Convex only,0.1701,
+0,120,Convex only,0.1641,
+0,140,Convex only,0.1584,
+0,160,Convex only,0.1476,
+0,180,Convex only,0.1497,
+0,200,Convex only,0.1458,
+1,20,Convex only,0.2523,
+1,40,Convex only,0.2140,
+1,60,Convex only,0.1844,
+1,80,Convex only,0.1640,
+1,100,Convex only,0.1500,
+1,120,Convex only,0.1499,
+1,140,Convex only,0.1475,
+1,160,Convex only,0.1546,
+1,180,Convex only,0.1458,
+1,200,Convex only,0.1416,
+2,20,Convex only,0.2215,
+2,40,Convex only,0.1925,
+2,60,Convex only,0.1752,
+2,80,Convex only,0.1744,
+2,100,Convex only,0.1816,
+2,120,Convex only,0.1780,
+2,140,Convex only,0.1679,
+2,160,Convex only,0.1643,
+2,180,Convex only,0.1559,
+2,200,Convex only,0.1558,
+3,20,Convex only,0.2313,
+3,40,Convex only,0.1970,
+3,60,Convex only,0.1888,
+3,80,Convex only,0.1749,
+3,100,Convex only,0.1637,
+3,120,Convex only,0.1555,
+3,140,Convex only,0.1533,
+3,160,Convex only,0.1474,
+3,180,Convex only,0.1407,
+3,200,Convex only,0.1370,
+4,20,Convex only,0.2429,
+4,40,Convex only,0.1974,
+4,60,Convex only,0.1771,
+4,80,Convex only,0.1724,
+4,100,Convex only,0.1634,
+4,120,Convex only,0.1587,
+4,140,Convex only,0.1509,
+4,160,Convex only,0.1502,
+4,180,Convex only,0.1460,
+4,200,Convex only,0.1417,
+5,20,Convex only,0.2117,
+5,40,Convex only,0.1864,
+5,60,Convex only,0.1735,
+5,80,Convex only,0.1666,
+5,100,Convex only,0.1617,
+5,120,Convex only,0.1585,
+5,140,Convex only,0.1503,
+5,160,Convex only,0.1430,
+5,180,Convex only,0.1411,
+5,200,Convex only,0.1405,
+6,20,Convex only,0.2242,
+6,40,Convex only,0.2039,
+6,60,Convex only,0.1837,
+6,80,Convex only,0.1715,
+6,100,Convex only,0.1571,
+6,120,Convex only,0.1562,
+6,140,Convex only,0.1491,
+6,160,Convex only,0.1449,
+6,180,Convex only,0.1407,
+6,200,Convex only,0.1372,
+7,20,Convex only,0.2429,
+7,40,Convex only,0.2175,
+7,60,Convex only,0.1861,
+7,80,Convex only,0.1666,
+7,100,Convex only,0.1667,
+7,120,Convex only,0.1555,
+7,140,Convex only,0.1583,
+7,160,Convex only,0.1578,
+7,180,Convex only,0.1495,
+7,200,Convex only,0.1498,
+8,20,Convex only,0.2283,
+8,40,Convex only,0.1925,
+8,60,Convex only,0.1881,
+8,80,Convex only,0.1790,
+8,100,Convex only,0.1697,
+8,120,Convex only,0.1525,
+8,140,Convex only,0.1465,
+8,160,Convex only,0.1448,
+8,180,Convex only,0.1436,
+8,200,Convex only,0.1464,
+9,20,Convex only,0.2671,
+9,40,Convex only,0.2156,
+9,60,Convex only,0.1910,
+9,80,Convex only,0.1782,
+9,100,Convex only,0.1764,
+9,120,Convex only,0.1641,
+9,140,Convex only,0.1549,
+9,160,Convex only,0.1519,
+9,180,Convex only,0.1468,
+9,200,Convex only,0.1463,
+10,20,Convex only,0.2360,
+10,40,Convex only,0.2018,
+10,60,Convex only,0.1959,
+10,80,Convex only,0.1708,
+10,100,Convex only,0.1746,
+10,120,Convex only,0.1575,
+10,140,Convex only,0.1556,
+10,160,Convex only,0.1507,
+10,180,Convex only,0.1374,
+10,200,Convex only,0.1450,
+11,20,Convex only,0.2406,
+11,40,Convex only,0.1994,
+11,60,Convex only,0.1826,
+11,80,Convex only,0.1656,
+11,100,Convex only,0.1586,
+11,120,Convex only,0.1556,
+11,140,Convex only,0.1524,
+11,160,Convex only,0.1490,
+11,180,Convex only,0.1517,
+11,200,Convex only,0.1513,
+12,20,Convex only,0.2363,
+12,40,Convex only,0.2051,
+12,60,Convex only,0.1826,
+12,80,Convex only,0.1696,
+12,100,Convex only,0.1618,
+12,120,Convex only,0.1545,
+12,140,Convex only,0.1486,
+12,160,Convex only,0.1418,
+12,180,Convex only,0.1385,
+12,200,Convex only,0.1361,
+13,20,Convex only,0.2478,
+13,40,Convex only,0.2000,
+13,60,Convex only,0.1912,
+13,80,Convex only,0.1751,
+13,100,Convex only,0.1652,
+13,120,Convex only,0.1611,
+13,140,Convex only,0.1562,
+13,160,Convex only,0.1471,
+13,180,Convex only,0.1478,
+13,200,Convex only,0.1434,
+14,20,Convex only,0.2563,
+14,40,Convex only,0.1997,
+14,60,Convex only,0.1681,
+14,80,Convex only,0.1660,
+14,100,Convex only,0.1539,
+14,120,Convex only,0.1498,
+14,140,Convex only,0.1469,
+14,160,Convex only,0.1458,
+14,180,Convex only,0.1420,
+14,200,Convex only,0.1432,
+15,20,Convex only,0.2548,
+15,40,Convex only,0.2140,
+15,60,Convex only,0.1830,
+15,80,Convex only,0.1880,
+15,100,Convex only,0.1687,
+15,120,Convex only,0.1670,
+15,140,Convex only,0.1624,
+15,160,Convex only,0.1501,
+15,180,Convex only,0.1442,
+15,200,Convex only,0.1396,
+16,20,Convex only,0.2359,
+16,40,Convex only,0.1987,
+16,60,Convex only,0.1770,
+16,80,Convex only,0.1662,
+16,100,Convex only,0.1613,
+16,120,Convex only,0.1511,
+16,140,Convex only,0.1497,
+16,160,Convex only,0.1413,
+16,180,Convex only,0.1399,
+16,200,Convex only,0.1354,
+17,20,Convex only,0.2210,
+17,40,Convex only,0.2054,
+17,60,Convex only,0.1846,
+17,80,Convex only,0.1772,
+17,100,Convex only,0.1692,
+17,120,Convex only,0.1635,
+17,140,Convex only,0.1642,
+17,160,Convex only,0.1557,
+17,180,Convex only,0.1500,
+17,200,Convex only,0.1461,
+18,20,Convex only,0.2434,
+18,40,Convex only,0.1916,
+18,60,Convex only,0.2000,
+18,80,Convex only,0.1789,
+18,100,Convex only,0.1586,
+18,120,Convex only,0.1522,
+18,140,Convex only,0.1420,
+18,160,Convex only,0.1444,
+18,180,Convex only,0.1504,
+18,200,Convex only,0.1451,
+19,20,Convex only,0.2371,
+19,40,Convex only,0.2098,
+19,60,Convex only,0.1932,
+19,80,Convex only,0.1758,
+19,100,Convex only,0.1756,
+19,120,Convex only,0.1705,
+19,140,Convex only,0.1675,
+19,160,Convex only,0.1593,
+19,180,Convex only,0.1560,
+19,200,Convex only,0.1495,
+0,20,Additive,0.2243,
+0,40,Additive,0.2113,
+0,60,Additive,0.2053,
+0,80,Additive,0.2011,
+0,100,Additive,0.1898,
+0,120,Additive,0.1837,
+0,140,Additive,0.1880,
+0,160,Additive,0.1795,
+0,180,Additive,0.2010,
+0,200,Additive,0.2009,
+1,20,Additive,0.2307,
+1,40,Additive,0.2083,
+1,60,Additive,0.2051,
+1,80,Additive,0.2028,
+1,100,Additive,0.1961,
+1,120,Additive,0.2012,
+1,140,Additive,0.2020,
+1,160,Additive,0.2019,
+1,180,Additive,0.2041,
+1,200,Additive,0.2110,
+2,20,Additive,0.2171,
+2,40,Additive,0.1845,
+2,60,Additive,0.1911,
+2,80,Additive,0.1767,
+2,100,Additive,0.1719,
+2,120,Additive,0.1769,
+2,140,Additive,0.1774,
+2,160,Additive,0.1884,
+2,180,Additive,0.1949,
+2,200,Additive,0.2005,
+3,20,Additive,0.2235,
+3,40,Additive,0.2141,
+3,60,Additive,0.1983,
+3,80,Additive,0.1959,
+3,100,Additive,0.1860,
+3,120,Additive,0.1797,
+3,140,Additive,0.1917,
+3,160,Additive,0.1897,
+3,180,Additive,0.1899,
+3,200,Additive,0.1881,
+4,20,Additive,0.2189,
+4,40,Additive,0.1916,
+4,60,Additive,0.1813,
+4,80,Additive,0.2014,
+4,100,Additive,0.1941,
+4,120,Additive,0.2074,
+4,140,Additive,0.2124,
+4,160,Additive,0.2060,
+4,180,Additive,0.2124,
+4,200,Additive,0.2067,
+5,20,Additive,0.2109,
+5,40,Additive,0.1871,
+5,60,Additive,0.1764,
+5,80,Additive,0.1865,
+5,100,Additive,0.1887,
+5,120,Additive,0.1899,
+5,140,Additive,0.1929,
+5,160,Additive,0.1938,
+5,180,Additive,0.1934,
+5,200,Additive,0.1870,
+6,20,Additive,0.2032,
+6,40,Additive,0.2054,
+6,60,Additive,0.2104,
+6,80,Additive,0.2088,
+6,100,Additive,0.2013,
+6,120,Additive,0.1989,
+6,140,Additive,0.2020,
+6,160,Additive,0.1971,
+6,180,Additive,0.1954,
+6,200,Additive,0.1904,
+7,20,Additive,0.2334,
+7,40,Additive,0.1996,
+7,60,Additive,0.1899,
+7,80,Additive,0.1861,
+7,100,Additive,0.1933,
+7,120,Additive,0.2018,
+7,140,Additive,0.2043,
+7,160,Additive,0.1995,
+7,180,Additive,0.1980,
+7,200,Additive,0.1950,
+8,20,Additive,0.2099,
+8,40,Additive,0.2000,
+8,60,Additive,0.1902,
+8,80,Additive,0.1971,
+8,100,Additive,0.1889,
+8,120,Additive,0.1854,
+8,140,Additive,0.1840,
+8,160,Additive,0.1857,
+8,180,Additive,0.1857,
+8,200,Additive,0.1841,
+9,20,Additive,0.2167,
+9,40,Additive,0.2015,
+9,60,Additive,0.2027,
+9,80,Additive,0.2031,
+9,100,Additive,0.1969,
+9,120,Additive,0.1942,
+9,140,Additive,0.1941,
+9,160,Additive,0.1962,
+9,180,Additive,0.1933,
+9,200,Additive,0.1940,
+10,20,Additive,0.2392,
+10,40,Additive,0.1972,
+10,60,Additive,0.1884,
+10,80,Additive,0.1871,
+10,100,Additive,0.1835,
+10,120,Additive,0.1837,
+10,140,Additive,0.1818,
+10,160,Additive,0.1812,
+10,180,Additive,0.1988,
+10,200,Additive,0.1973,
+11,20,Additive,0.2110,
+11,40,Additive,0.1921,
+11,60,Additive,0.1903,
+11,80,Additive,0.1887,
+11,100,Additive,0.1856,
+11,120,Additive,0.1864,
+11,140,Additive,0.1836,
+11,160,Additive,0.1906,
+11,180,Additive,0.1894,
+11,200,Additive,0.1892,
+12,20,Additive,0.2239,
+12,40,Additive,0.2086,
+12,60,Additive,0.2126,
+12,80,Additive,0.2052,
+12,100,Additive,0.2216,
+12,120,Additive,0.2156,
+12,140,Additive,0.2121,
+12,160,Additive,0.2043,
+12,180,Additive,0.2037,
+12,200,Additive,0.2001,
+13,20,Additive,0.2379,
+13,40,Additive,0.2152,
+13,60,Additive,0.2027,
+13,80,Additive,0.2070,
+13,100,Additive,0.2016,
+13,120,Additive,0.1989,
+13,140,Additive,0.2049,
+13,160,Additive,0.2105,
+13,180,Additive,0.2117,
+13,200,Additive,0.2060,
+14,20,Additive,0.2167,
+14,40,Additive,0.2136,
+14,60,Additive,0.2008,
+14,80,Additive,0.2003,
+14,100,Additive,0.1950,
+14,120,Additive,0.1920,
+14,140,Additive,0.1901,
+14,160,Additive,0.1933,
+14,180,Additive,0.1901,
+14,200,Additive,0.1903,
+15,20,Additive,0.2280,
+15,40,Additive,0.1958,
+15,60,Additive,0.1911,
+15,80,Additive,0.1913,
+15,100,Additive,0.1867,
+15,120,Additive,0.1825,
+15,140,Additive,0.1937,
+15,160,Additive,0.1887,
+15,180,Additive,0.1859,
+15,200,Additive,0.1944,
+16,20,Additive,0.2280,
+16,40,Additive,0.1988,
+16,60,Additive,0.1891,
+16,80,Additive,0.1844,
+16,100,Additive,0.1842,
+16,120,Additive,0.1928,
+16,140,Additive,0.1882,
+16,160,Additive,0.1858,
+16,180,Additive,0.1851,
+16,200,Additive,0.1869,
+17,20,Additive,0.2162,
+17,40,Additive,0.2085,
+17,60,Additive,0.1983,
+17,80,Additive,0.1897,
+17,100,Additive,0.1931,
+17,120,Additive,0.2014,
+17,140,Additive,0.2014,
+17,160,Additive,0.1998,
+17,180,Additive,0.1960,
+17,200,Additive,0.1988,
+18,20,Additive,0.2312,
+18,40,Additive,0.2061,
+18,60,Additive,0.2070,
+18,80,Additive,0.2016,
+18,100,Additive,0.1930,
+18,120,Additive,0.2090,
+18,140,Additive,0.2070,
+18,160,Additive,0.2094,
+18,180,Additive,0.2028,
+18,200,Additive,0.2036,
+19,20,Additive,0.2353,
+19,40,Additive,0.2087,
+19,60,Additive,0.2035,
+19,80,Additive,0.1948,
+19,100,Additive,0.1943,
+19,120,Additive,0.1946,
+19,140,Additive,0.1857,
+19,160,Additive,0.1977,
+19,180,Additive,0.1939,
+19,200,Additive,0.1912,
+0,20,Smooth,0.1714,7.8125
+0,40,Smooth,0.1502,9.7656
+0,60,Smooth,0.1273,9.7656
+0,80,Smooth,0.1257,9.7656
+0,100,Smooth,0.1124,9.7656
+0,120,Smooth,0.1063,9.7656
+0,140,Smooth,0.1250,13.6719
+0,160,Smooth,0.1278,13.6719
+0,180,Smooth,0.1277,13.6719
+0,200,Smooth,0.1346,17.5781
+1,20,Smooth,0.1698,9.7656
+1,40,Smooth,0.1394,9.7656
+1,60,Smooth,0.1251,9.7656
+1,80,Smooth,0.1134,9.7656
+1,100,Smooth,0.1434,15.6250
+1,120,Smooth,0.1356,15.6250
+1,140,Smooth,0.1318,17.5781
+1,160,Smooth,0.1249,17.5781
+1,180,Smooth,0.1218,17.5781
+1,200,Smooth,0.1195,17.5781
+2,20,Smooth,0.1162,7.8125
+2,40,Smooth,0.1308,9.7656
+2,60,Smooth,0.1250,9.7656
+2,80,Smooth,0.1178,9.7656
+2,100,Smooth,0.1180,9.7656
+2,120,Smooth,0.1096,9.7656
+2,140,Smooth,0.1165,11.7188
+2,160,Smooth,0.1065,11.7188
+2,180,Smooth,0.1047,11.7188
+2,200,Smooth,0.1051,11.7188
+3,20,Smooth,0.1508,7.8125
+3,40,Smooth,0.1713,9.7656
+3,60,Smooth,0.1553,11.7188
+3,80,Smooth,0.1421,11.7188
+3,100,Smooth,0.1285,11.7188
+3,120,Smooth,0.1188,11.7188
+3,140,Smooth,0.1140,11.7188
+3,160,Smooth,0.1097,11.7188
+3,180,Smooth,0.1052,11.7188
+3,200,Smooth,0.1040,11.7188
+4,20,Smooth,0.1488,7.8125
+4,40,Smooth,0.1416,9.7656
+4,60,Smooth,0.1195,9.7656
+4,80,Smooth,0.1111,9.7656
+4,100,Smooth,0.1270,11.7188
+4,120,Smooth,0.1243,11.7188
+4,140,Smooth,0.1166,11.7188
+4,160,Smooth,0.1186,11.7188
+4,180,Smooth,0.1128,11.7188
+4,200,Smooth,0.1163,13.6719
+5,20,Smooth,0.1552,9.7656
+5,40,Smooth,0.1389,9.7656
+5,60,Smooth,0.1175,9.7656
+5,80,Smooth,0.1055,9.7656
+5,100,Smooth,0.1189,11.7188
+5,120,Smooth,0.1157,11.7188
+5,140,Smooth,0.1117,11.7188
+5,160,Smooth,0.1102,11.7188
+5,180,Smooth,0.1053,11.7188
+5,200,Smooth,0.1041,11.7188
+6,20,Smooth,0.1376,7.8125
+6,40,Smooth,0.1220,7.8125
+6,60,Smooth,0.1638,11.7188
+6,80,Smooth,0.1499,11.7188
+6,100,Smooth,0.1484,11.7188
+6,120,Smooth,0.1440,11.7188
+6,140,Smooth,0.1307,11.7188
+6,160,Smooth,0.1227,11.7188
+6,180,Smooth,0.1174,11.7188
+6,200,Smooth,0.1106,11.7188
+7,20,Smooth,0.1376,7.8125
+7,40,Smooth,0.1466,9.7656
+7,60,Smooth,0.1229,9.7656
+7,80,Smooth,0.1341,11.7188
+7,100,Smooth,0.1335,11.7188
+7,120,Smooth,0.1287,11.7188
+7,140,Smooth,0.1285,11.7188
+7,160,Smooth,0.1229,11.7188
+7,180,Smooth,0.1156,11.7188
+7,200,Smooth,0.1128,11.7188
+8,20,Smooth,0.1520,9.7656
+8,40,Smooth,0.1301,9.7656
+8,60,Smooth,0.1199,9.7656
+8,80,Smooth,0.1158,9.7656
+8,100,Smooth,0.1110,9.7656
+8,120,Smooth,0.1055,9.7656
+8,140,Smooth,0.1026,9.7656
+8,160,Smooth,0.0971,9.7656
+8,180,Smooth,0.0977,9.7656
+8,200,Smooth,0.1125,11.7188
+9,20,Smooth,0.1939,9.7656
+9,40,Smooth,0.1696,9.7656
+9,60,Smooth,0.1333,9.7656
+9,80,Smooth,0.1204,9.7656
+9,100,Smooth,0.1286,11.7188
+9,120,Smooth,0.1261,11.7188
+9,140,Smooth,0.1174,11.7188
+9,160,Smooth,0.1176,11.7188
+9,180,Smooth,0.1126,11.7188
+9,200,Smooth,0.1082,11.7188
+10,20,Smooth,0.1702,9.7656
+10,40,Smooth,0.1291,9.7656
+10,60,Smooth,0.1295,9.7656
+10,80,Smooth,0.1221,9.7656
+10,100,Smooth,0.1107,9.7656
+10,120,Smooth,0.1094,9.7656
+10,140,Smooth,0.1077,9.7656
+10,160,Smooth,0.1014,9.7656
+10,180,Smooth,0.0937,9.7656
+10,200,Smooth,0.1111,11.7188
+11,20,Smooth,0.1834,9.7656
+11,40,Smooth,0.1412,9.7656
+11,60,Smooth,0.1386,11.7188
+11,80,Smooth,0.1297,11.7188
+11,100,Smooth,0.1300,11.7188
+11,120,Smooth,0.1169,11.7188
+11,140,Smooth,0.1123,11.7188
+11,160,Smooth,0.1350,15.6250
+11,180,Smooth,0.1261,15.6250
+11,200,Smooth,0.1221,15.6250
+12,20,Smooth,0.1754,9.7656
+12,40,Smooth,0.1591,9.7656
+12,60,Smooth,0.1319,9.7656
+12,80,Smooth,0.1164,9.7656
+12,100,Smooth,0.1297,11.7188
+12,120,Smooth,0.1475,17.5781
+12,140,Smooth,0.1428,17.5781
+12,160,Smooth,0.1320,17.5781
+12,180,Smooth,0.1254,17.5781
+12,200,Smooth,0.1258,17.5781
+13,20,Smooth,0.1513,7.8125
+13,40,Smooth,0.1548,11.7188
+13,60,Smooth,0.1489,11.7188
+13,80,Smooth,0.1361,11.7188
+13,100,Smooth,0.1332,11.7188
+13,120,Smooth,0.1257,11.7188
+13,140,Smooth,0.1200,11.7188
+13,160,Smooth,0.1181,11.7188
+13,180,Smooth,0.1132,11.7188
+13,200,Smooth,0.1098,11.7188
+14,20,Smooth,0.1231,7.8125
+14,40,Smooth,0.1147,9.7656
+14,60,Smooth,0.1127,9.7656
+14,80,Smooth,0.1112,9.7656
+14,100,Smooth,0.1139,9.7656
+14,120,Smooth,0.1176,11.7188
+14,140,Smooth,0.1164,11.7188
+14,160,Smooth,0.1124,11.7188
+14,180,Smooth,0.1113,11.7188
+14,200,Smooth,0.1170,13.6719
+15,20,Smooth,0.1660,7.8125
+15,40,Smooth,0.1356,9.7656
+15,60,Smooth,0.1210,9.7656
+15,80,Smooth,0.1266,9.7656
+15,100,Smooth,0.1371,11.7188
+15,120,Smooth,0.1271,11.7188
+15,140,Smooth,0.1224,11.7188
+15,160,Smooth,0.1182,11.7188
+15,180,Smooth,0.1138,11.7188
+15,200,Smooth,0.1105,11.7188
+16,20,Smooth,0.1534,9.7656
+16,40,Smooth,0.1231,9.7656
+16,60,Smooth,0.1242,9.7656
+16,80,Smooth,0.1166,9.7656
+16,100,Smooth,0.1104,9.7656
+16,120,Smooth,0.1028,9.7656
+16,140,Smooth,0.1034,9.7656
+16,160,Smooth,0.1173,11.7188
+16,180,Smooth,0.1131,11.7188
+16,200,Smooth,0.1097,11.7188
+17,20,Smooth,0.1695,9.7656
+17,40,Smooth,0.1418,9.7656
+17,60,Smooth,0.1323,9.7656
+17,80,Smooth,0.1213,9.7656
+17,100,Smooth,0.1567,17.5781
+17,120,Smooth,0.1457,17.5781
+17,140,Smooth,0.1449,17.5781
+17,160,Smooth,0.1370,17.5781
+17,180,Smooth,0.1345,17.5781
+17,200,Smooth,0.1297,17.5781
+18,20,Smooth,0.1446,7.8125
+18,40,Smooth,0.1390,9.7656
+18,60,Smooth,0.1411,11.7188
+18,80,Smooth,0.1269,11.7188
+18,100,Smooth,0.1278,11.7188
+18,120,Smooth,0.1170,11.7188
+18,140,Smooth,0.1127,11.7188
+18,160,Smooth,0.1136,11.7188
+18,180,Smooth,0.1104,11.7188
+18,200,Smooth,0.1069,11.7188
+19,20,Smooth,0.1967,9.7656
+19,40,Smooth,0.1480,9.7656
+19,60,Smooth,0.1251,9.7656
+19,80,Smooth,0.1200,9.7656
+19,100,Smooth,0.1244,11.7188
+19,120,Smooth,0.1139,11.7188
+19,140,Smooth,0.1121,11.7188
+19,160,Smooth,0.1067,11.7188
+19,180,Smooth,0.1048,11.7188
+19,200,Smooth,0.1010,11.7188
+0,20,Additive+Smooth,0.1883,41.0156
+0,40,Additive+Smooth,0.1300,10.7422
+0,60,Additive+Smooth,0.1662,100.5859
+0,80,Additive+Smooth,0.1517,46.8750
+0,100,Additive+Smooth,0.1510,102.5391
+0,120,Additive+Smooth,0.1484,101.5625
+0,140,Additive+Smooth,0.1586,142.5781
+0,160,Additive+Smooth,0.1509,142.5781
+0,180,Additive+Smooth,0.1540,8.7891
+0,200,Additive+Smooth,0.1603,10.7422
+1,20,Additive+Smooth,0.1844,129.8828
+1,40,Additive+Smooth,0.1770,136.7188
+1,60,Additive+Smooth,0.1422,10.7422
+1,80,Additive+Smooth,0.1701,36.1328
+1,100,Additive+Smooth,0.1584,37.1094
+1,120,Additive+Smooth,0.1670,26.3672
+1,140,Additive+Smooth,0.1559,47.8516
+1,160,Additive+Smooth,0.1614,65.4297
+1,180,Additive+Smooth,0.1595,51.7578
+1,200,Additive+Smooth,0.1580,18.5547
+2,20,Additive+Smooth,0.1494,18.5547
+2,40,Additive+Smooth,0.1590,184.5703
+2,60,Additive+Smooth,0.1655,100.5859
+2,80,Additive+Smooth,0.1491,183.5938
+2,100,Additive+Smooth,0.1447,86.9141
+2,120,Additive+Smooth,0.1312,11.7188
+2,140,Additive+Smooth,0.1381,16.6016
+2,160,Additive+Smooth,0.1412,8.7891
+2,180,Additive+Smooth,0.1443,7.8125
+2,200,Additive+Smooth,0.1610,6.8359
+3,20,Additive+Smooth,0.1428,11.7188
+3,40,Additive+Smooth,0.1302,8.7891
+3,60,Additive+Smooth,0.1279,8.7891
+3,80,Additive+Smooth,0.1399,16.6016
+3,100,Additive+Smooth,0.1449,32.2266
+3,120,Additive+Smooth,0.1424,32.2266
+3,140,Additive+Smooth,0.1447,8.7891
+3,160,Additive+Smooth,0.1467,10.7422
+3,180,Additive+Smooth,0.1454,14.6484
+3,200,Additive+Smooth,0.1471,15.6250
+4,20,Additive+Smooth,0.1539,13.6719
+4,40,Additive+Smooth,0.1400,13.6719
+4,60,Additive+Smooth,0.1530,42.9688
+4,80,Additive+Smooth,0.1427,10.7422
+4,100,Additive+Smooth,0.1443,12.6953
+4,120,Additive+Smooth,0.1512,16.6016
+4,140,Additive+Smooth,0.1508,18.5547
+4,160,Additive+Smooth,0.1525,18.5547
+4,180,Additive+Smooth,0.1493,15.6250
+4,200,Additive+Smooth,0.1527,13.6719
+5,20,Additive+Smooth,0.1711,39.0625
+5,40,Additive+Smooth,0.1458,20.5078
+5,60,Additive+Smooth,0.1515,41.9922
+5,80,Additive+Smooth,0.1416,27.3438
+5,100,Additive+Smooth,0.1348,10.7422
+5,120,Additive+Smooth,0.1436,95.7031
+5,140,Additive+Smooth,0.1420,19.5312
+5,160,Additive+Smooth,0.1404,22.4609
+5,180,Additive+Smooth,0.1380,22.4609
+5,200,Additive+Smooth,0.1438,37.1094
+6,20,Additive+Smooth,0.1293,8.7891
+6,40,Additive+Smooth,0.1360,15.6250
+6,60,Additive+Smooth,0.1370,7.8125
+6,80,Additive+Smooth,0.1465,7.8125
+6,100,Additive+Smooth,0.1480,7.8125
+6,120,Additive+Smooth,0.1468,10.7422
+6,140,Additive+Smooth,0.1546,8.7891
+6,160,Additive+Smooth,0.1543,27.3438
+6,180,Additive+Smooth,0.1523,22.4609
+6,200,Additive+Smooth,0.1488,22.4609
+7,20,Additive+Smooth,0.2343,330.0781
+7,40,Additive+Smooth,0.1549,22.4609
+7,60,Additive+Smooth,0.1411,14.6484
+7,80,Additive+Smooth,0.1405,17.5781
+7,100,Additive+Smooth,0.1937,516.6016
+7,120,Additive+Smooth,0.1543,10.7422
+7,140,Additive+Smooth,0.1578,9.7656
+7,160,Additive+Smooth,0.1568,9.7656
+7,180,Additive+Smooth,0.1513,12.6953
+7,200,Additive+Smooth,0.1505,12.6953
+8,20,Additive+Smooth,0.1637,25.3906
+8,40,Additive+Smooth,0.1598,35.1562
+8,60,Additive+Smooth,0.1517,34.1797
+8,80,Additive+Smooth,0.1507,45.8984
+8,100,Additive+Smooth,0.1433,47.8516
+8,120,Additive+Smooth,0.1439,45.8984
+8,140,Additive+Smooth,0.1434,32.2266
+8,160,Additive+Smooth,0.1433,18.5547
+8,180,Additive+Smooth,0.1432,26.3672
+8,200,Additive+Smooth,0.1404,26.3672
+9,20,Additive+Smooth,0.2165,572.2656
+9,40,Additive+Smooth,0.2022,289.0625
+9,60,Additive+Smooth,0.1376,15.6250
+9,80,Additive+Smooth,0.1376,6.8359
+9,100,Additive+Smooth,0.1380,8.7891
+9,120,Additive+Smooth,0.1418,8.7891
+9,140,Additive+Smooth,0.1411,29.2969
+9,160,Additive+Smooth,0.1434,49.8047
+9,180,Additive+Smooth,0.1462,49.8047
+9,200,Additive+Smooth,0.1476,38.0859
+10,20,Additive+Smooth,0.1269,8.7891
+10,40,Additive+Smooth,0.1466,20.5078
+10,60,Additive+Smooth,0.1481,36.1328
+10,80,Additive+Smooth,0.1304,13.6719
+10,100,Additive+Smooth,0.1315,13.6719
+10,120,Additive+Smooth,0.1329,11.7188
+10,140,Additive+Smooth,0.1348,10.7422
+10,160,Additive+Smooth,0.1344,12.6953
+10,180,Additive+Smooth,0.1500,8.7891
+10,200,Additive+Smooth,0.1442,16.6016
+11,20,Additive+Smooth,0.1808,47.8516
+11,40,Additive+Smooth,0.1418,16.6016
+11,60,Additive+Smooth,0.1433,16.6016
+11,80,Additive+Smooth,0.1551,163.0859
+11,100,Additive+Smooth,0.1492,148.4375
+11,120,Additive+Smooth,0.1447,85.9375
+11,140,Additive+Smooth,0.1468,83.9844
+11,160,Additive+Smooth,0.1415,21.4844
+11,180,Additive+Smooth,0.1415,37.1094
+11,200,Additive+Smooth,0.1448,43.9453
+12,20,Additive+Smooth,0.1575,12.6953
+12,40,Additive+Smooth,0.1708,80.0781
+12,60,Additive+Smooth,0.1394,10.7422
+12,80,Additive+Smooth,0.1371,9.7656
+12,100,Additive+Smooth,0.1561,8.7891
+12,120,Additive+Smooth,0.1579,8.7891
+12,140,Additive+Smooth,0.1598,9.7656
+12,160,Additive+Smooth,0.1565,9.7656
+12,180,Additive+Smooth,0.1570,9.7656
+12,200,Additive+Smooth,0.1541,9.7656
+13,20,Additive+Smooth,0.1949,46.8750
+13,40,Additive+Smooth,0.1452,10.7422
+13,60,Additive+Smooth,0.1411,10.7422
+13,80,Additive+Smooth,0.1455,11.7188
+13,100,Additive+Smooth,0.1503,38.0859
+13,120,Additive+Smooth,0.1470,29.2969
+13,140,Additive+Smooth,0.1484,28.3203
+13,160,Additive+Smooth,0.1502,7.8125
+13,180,Additive+Smooth,0.1524,7.8125
+13,200,Additive+Smooth,0.1525,7.8125
+14,20,Additive+Smooth,0.1719,29.2969
+14,40,Additive+Smooth,0.1412,7.8125
+14,60,Additive+Smooth,0.1397,7.8125
+14,80,Additive+Smooth,0.1358,8.7891
+14,100,Additive+Smooth,0.1344,8.7891
+14,120,Additive+Smooth,0.1358,8.7891
+14,140,Additive+Smooth,0.1386,11.7188
+14,160,Additive+Smooth,0.1434,14.6484
+14,180,Additive+Smooth,0.1451,14.6484
+14,200,Additive+Smooth,0.1464,14.6484
+15,20,Additive+Smooth,0.1392,10.7422
+15,40,Additive+Smooth,0.1467,15.6250
+15,60,Additive+Smooth,0.1455,26.3672
+15,80,Additive+Smooth,0.1451,18.5547
+15,100,Additive+Smooth,0.1431,19.5312
+15,120,Additive+Smooth,0.1429,17.5781
+15,140,Additive+Smooth,0.1466,19.5312
+15,160,Additive+Smooth,0.1443,19.5312
+15,180,Additive+Smooth,0.1398,13.6719
+15,200,Additive+Smooth,0.1476,10.7422
+16,20,Additive+Smooth,0.1223,6.8359
+16,40,Additive+Smooth,0.1436,19.5312
+16,60,Additive+Smooth,0.1342,19.5312
+16,80,Additive+Smooth,0.1312,13.6719
+16,100,Additive+Smooth,0.1375,19.5312
+16,120,Additive+Smooth,0.1399,8.7891
+16,140,Additive+Smooth,0.1459,34.1797
+16,160,Additive+Smooth,0.1433,34.1797
+16,180,Additive+Smooth,0.1418,19.5312
+16,200,Additive+Smooth,0.1386,14.6484
+17,20,Additive+Smooth,0.1640,24.4141
+17,40,Additive+Smooth,0.1547,24.4141
+17,60,Additive+Smooth,0.1458,26.3672
+17,80,Additive+Smooth,0.1452,27.3438
+17,100,Additive+Smooth,0.1441,39.0625
+17,120,Additive+Smooth,0.1490,22.4609
+17,140,Additive+Smooth,0.1477,16.6016
+17,160,Additive+Smooth,0.1493,15.6250
+17,180,Additive+Smooth,0.1534,10.7422
+17,200,Additive+Smooth,0.1546,9.7656
+18,20,Additive+Smooth,0.1601,14.6484
+18,40,Additive+Smooth,0.1389,13.6719
+18,60,Additive+Smooth,0.1369,8.7891
+18,80,Additive+Smooth,0.1371,12.6953
+18,100,Additive+Smooth,0.1461,39.0625
+18,120,Additive+Smooth,0.1513,17.5781
+18,140,Additive+Smooth,0.1478,17.5781
+18,160,Additive+Smooth,0.1477,17.5781
+18,180,Additive+Smooth,0.2091,411.1328
+18,200,Additive+Smooth,0.2090,412.1094
+19,20,Additive+Smooth,0.2339,392.5781
+19,40,Additive+Smooth,0.2110,667.9688
+19,60,Additive+Smooth,0.1710,42.9688
+19,80,Additive+Smooth,0.1367,12.6953
+19,100,Additive+Smooth,0.1380,12.6953
+19,120,Additive+Smooth,0.1411,12.6953
+19,140,Additive+Smooth,0.1371,10.7422
+19,160,Additive+Smooth,0.1519,8.7891
+19,180,Additive+Smooth,0.1503,8.7891
+19,200,Additive+Smooth,0.1442,19.5312

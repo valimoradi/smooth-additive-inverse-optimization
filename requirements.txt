@@ -1,0 +1,10 @@
+numpy>=1.23
+cvxpy>=1.3
+matplotlib>=3.6
+pandas>=1.5
+scikit-learn>=1.0
+
+# Solvers (academic licenses available):
+#   MOSEK (primary): pip install mosek  — free academic license at mosek.com
+#   GUROBI (add_lp model): install gurobipy and obtain a license at gurobi.com
+mosek>=10.0
