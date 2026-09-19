@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or the methods it implements, please cite the paper below."
-title: "Smooth and Additive Nonparametric Inverse Optimization"
+title: "Beyond Parametric Inverse Optimization: code and results"
 authors:
   - family-names: Valimoradi
     given-names: Reza
@@ -10,7 +10,7 @@ license: MIT
 repository-code: "https://github.com/valimoradi/smooth-additive-inverse-optimization"
 preferred-citation:
   type: article
-  title: "Learning Convex Objectives from Decisions: Smooth and Additive Nonparametric Inverse Optimization"
+  title: "Beyond Parametric Inverse Optimization"
   authors:
     - family-names: Valimoradi
       given-names: Reza

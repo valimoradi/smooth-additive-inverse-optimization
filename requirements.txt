@@ -8,3 +8,4 @@ scikit-learn>=1.0
 #   MOSEK (primary): pip install mosek  — free academic license at mosek.com
 #   GUROBI (add_lp model): install gurobipy and obtain a license at gurobi.com
 mosek>=10.0
+gurobipy>=10.0   # Additive (LP) class in consumer_choice and healthcare_synthetic; academic license at gurobi.com

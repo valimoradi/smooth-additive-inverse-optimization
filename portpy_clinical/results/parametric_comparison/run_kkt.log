@@ -1,0 +1,385 @@
+(CVXPY) Jun 23 08:30:31 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+Test set: 20 patients
+Using canonical test set: 20 patients
+
+  -- N=5, rho=1, method=kkt --
+    Training: 5 patients
+  patients used=5  comp-slack resid=4.7519e+03
+  alpha_hat (sign-constrained): [0.2069 0.2119 0.0633 0.4249 0.0349 0.0582]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.23e+02  leverage shares=[0.006 0.151 0.283 0.231 0.329]
+  unidentified direction (|smallest eigvec|): [0.159 0.115 0.025 0.977 0.076 0.036]
+    alpha_hat = [0.2069 0.2119 0.0633 0.4249 0.0349 0.0582]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=1.0505  (9.7s)
+    test[ 1] Prostate_Patient_32: RelErr=1.1118  (5.2s)
+    test[ 2] Prostate_Patient_60: RelErr=1.1530  (3.4s)
+    test[ 3] Prostate_Patient_72: RelErr=1.1867  (2.6s)
+    test[ 4] Prostate_Patient_95: RelErr=0.9595  (4.6s)
+    test[ 5] Prostate_Patient_123: RelErr=1.0778  (7.8s)
+    test[ 6] Prostate_Patient_53: RelErr=1.0499  (7.4s)
+    test[ 7] Prostate_Patient_55: RelErr=1.0038  (4.2s)
+    test[ 8] Prostate_Patient_36: RelErr=1.1146  (2.9s)
+    test[ 9] Prostate_Patient_54: RelErr=1.0677  (2.9s)
+    test[10] Prostate_Patient_42: RelErr=1.0270  (4.4s)
+    test[11] Prostate_Patient_51: RelErr=1.1092  (4.6s)
+    test[12] Prostate_Patient_97: RelErr=1.2351  (3.0s)
+    test[13] Prostate_Patient_12: RelErr=1.0054  (12.8s)
+    test[14] Prostate_Patient_46: RelErr=1.0428  (4.7s)
+    test[15] Prostate_Patient_4: RelErr=0.9201  (8.3s)
+    test[16] Prostate_Patient_21: RelErr=0.9982  (10.8s)
+    test[17] Prostate_Patient_122: RelErr=1.0706  (16.1s)
+    test[18] Prostate_Patient_109: RelErr=1.0825  (4.6s)
+    test[19] Prostate_Patient_90: RelErr=1.0077  (2.9s)
+    Mean RelErr = 1.0637  (20/20 valid, 136.4s total)
+
+  -- N=5, rho=2, method=kkt --
+    Training: 5 patients
+  patients used=5  comp-slack resid=1.8240e+00
+  alpha_hat (sign-constrained): [0.3175 0.3174 0.1587 0.0793 0.0794 0.0476]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=9.43e+07  leverage shares=[0.    0.205 0.27  0.181 0.344]
+  unidentified direction (|smallest eigvec|): [0.646 0.646 0.323 0.161 0.161 0.097]
+    alpha_hat = [0.3175 0.3174 0.1587 0.0793 0.0794 0.0476]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.0088  (16.2s)
+    test[ 1] Prostate_Patient_32: RelErr=0.0062  (9.1s)
+    test[ 2] Prostate_Patient_60: RelErr=0.0058  (10.0s)
+    test[ 3] Prostate_Patient_72: RelErr=0.0171  (6.2s)
+    test[ 4] Prostate_Patient_95: RelErr=0.0198  (8.0s)
+    test[ 5] Prostate_Patient_123: RelErr=0.0060  (11.1s)
+    test[ 6] Prostate_Patient_53: RelErr=0.0070  (12.2s)
+    test[ 7] Prostate_Patient_55: RelErr=0.0051  (4.2s)
+    test[ 8] Prostate_Patient_36: RelErr=0.0064  (9.0s)
+    test[ 9] Prostate_Patient_54: RelErr=0.0079  (6.3s)
+    test[10] Prostate_Patient_42: RelErr=0.0050  (6.4s)
+    test[11] Prostate_Patient_51: RelErr=0.0047  (7.5s)
+    test[12] Prostate_Patient_97: RelErr=0.0103  (5.7s)
+    test[13] Prostate_Patient_12: RelErr=0.0188  (22.7s)
+    test[14] Prostate_Patient_46: RelErr=0.0045  (7.4s)
+    test[15] Prostate_Patient_4: RelErr=0.0087  (11.9s)
+    test[16] Prostate_Patient_21: RelErr=0.0047  (18.0s)
+    test[17] Prostate_Patient_122: RelErr=0.0021  (34.8s)
+    test[18] Prostate_Patient_109: RelErr=0.0078  (8.9s)
+    test[19] Prostate_Patient_90: RelErr=0.0052  (5.4s)
+    Mean RelErr = 0.0081  (20/20 valid, 234.6s total)
+
+  -- N=5, rho=3, method=kkt --
+    Training: 5 patients
+  patients used=5  comp-slack resid=9.3275e+09
+  alpha_hat (sign-constrained): [0.2419 0.481  0.188  0.0474 0.0417 0.    ]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=3.67e+02  leverage shares=[0.    0.299 0.281 0.166 0.253]
+  unidentified direction (|smallest eigvec|): [0.432 0.846 0.294 0.079 0.067 0.004]
+    alpha_hat = [0.2419 0.481  0.188  0.0474 0.0417 0.    ]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.5735  (20.8s)
+    test[ 1] Prostate_Patient_32: RelErr=0.5789  (7.7s)
+    test[ 2] Prostate_Patient_60: RelErr=0.6288  (8.8s)
+    test[ 3] Prostate_Patient_72: RelErr=0.5893  (4.5s)
+    test[ 4] Prostate_Patient_95: RelErr=0.6241  (5.7s)
+    test[ 5] Prostate_Patient_123: RelErr=0.6325  (13.1s)
+    test[ 6] Prostate_Patient_53: RelErr=0.5629  (10.8s)
+    test[ 7] Prostate_Patient_55: RelErr=0.7413  (4.9s)
+    test[ 8] Prostate_Patient_36: RelErr=0.7373  (5.7s)
+    test[ 9] Prostate_Patient_54: RelErr=0.6534  (4.9s)
+    test[10] Prostate_Patient_42: RelErr=0.7837  (6.3s)
+    test[11] Prostate_Patient_51: RelErr=0.5279  (10.6s)
+    test[12] Prostate_Patient_97: RelErr=0.6423  (7.4s)
+    test[13] Prostate_Patient_12: RelErr=0.5613  (22.8s)
+    test[14] Prostate_Patient_46: RelErr=0.6029  (5.9s)
+    test[15] Prostate_Patient_4: RelErr=0.6398  (17.3s)
+    test[16] Prostate_Patient_21: RelErr=0.6064  (15.5s)
+    test[17] Prostate_Patient_122: RelErr=0.7034  (32.2s)
+    test[18] Prostate_Patient_109: RelErr=0.6421  (6.8s)
+    test[19] Prostate_Patient_90: RelErr=0.5541  (5.7s)
+    Mean RelErr = 0.6293  (20/20 valid, 237.7s total)
+
+  -- N=6, rho=1, method=kkt --
+    Training: 6 patients
+  patients used=6  comp-slack resid=5.8812e+03
+  alpha_hat (sign-constrained): [0.1368 0.2331 0.0624 0.476  0.0361 0.0557]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.44e+02  leverage shares=[0.005 0.112 0.211 0.172 0.245 0.256]
+  unidentified direction (|smallest eigvec|): [0.09  0.099 0.019 0.988 0.064 0.025]
+    alpha_hat = [0.1368 0.2331 0.0624 0.476  0.0361 0.0557]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=1.0668  (5.4s)
+    test[ 1] Prostate_Patient_32: RelErr=1.0882  (3.0s)
+    test[ 2] Prostate_Patient_60: RelErr=1.1750  (2.4s)
+    test[ 3] Prostate_Patient_72: RelErr=1.2349  (1.4s)
+    test[ 4] Prostate_Patient_95: RelErr=0.9684  (2.3s)
+    test[ 5] Prostate_Patient_123: RelErr=1.0743  (3.7s)
+    test[ 6] Prostate_Patient_53: RelErr=1.0474  (3.7s)
+    test[ 7] Prostate_Patient_55: RelErr=1.0208  (2.1s)
+    test[ 8] Prostate_Patient_36: RelErr=1.1578  (1.4s)
+    test[ 9] Prostate_Patient_54: RelErr=1.0530  (1.7s)
+    test[10] Prostate_Patient_42: RelErr=1.0410  (2.5s)
+    test[11] Prostate_Patient_51: RelErr=1.1193  (2.9s)
+    test[12] Prostate_Patient_97: RelErr=1.1798  (1.5s)
+    test[13] Prostate_Patient_12: RelErr=1.0505  (8.1s)
+    test[14] Prostate_Patient_46: RelErr=1.0144  (2.3s)
+    test[15] Prostate_Patient_4: RelErr=0.9814  (4.0s)
+    test[16] Prostate_Patient_21: RelErr=1.0184  (5.7s)
+    test[17] Prostate_Patient_122: RelErr=1.0708  (9.2s)
+    test[18] Prostate_Patient_109: RelErr=1.0853  (2.4s)
+    test[19] Prostate_Patient_90: RelErr=1.0061  (1.8s)
+    Mean RelErr = 1.0727  (20/20 valid, 76.1s total)
+
+  -- N=6, rho=2, method=kkt --
+    Training: 6 patients
+  patients used=6  comp-slack resid=1.9680e+00
+  alpha_hat (sign-constrained): [0.3175 0.3174 0.1587 0.0794 0.0794 0.0476]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.18e+08  leverage shares=[0.    0.153 0.202 0.135 0.258 0.252]
+  unidentified direction (|smallest eigvec|): [0.646 0.646 0.323 0.161 0.161 0.097]
+    alpha_hat = [0.3175 0.3174 0.1587 0.0794 0.0794 0.0476]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.0036  (8.4s)
+    test[ 1] Prostate_Patient_32: RelErr=0.0062  (4.5s)
+    test[ 2] Prostate_Patient_60: RelErr=0.0072  (6.3s)
+    test[ 3] Prostate_Patient_72: RelErr=0.0171  (3.7s)
+    test[ 4] Prostate_Patient_95: RelErr=0.0139  (4.3s)
+    test[ 5] Prostate_Patient_123: RelErr=0.0097  (6.0s)
+    test[ 6] Prostate_Patient_53: RelErr=0.0073  (6.6s)
+    test[ 7] Prostate_Patient_55: RelErr=0.0022  (3.1s)
+    test[ 8] Prostate_Patient_36: RelErr=0.0028  (4.4s)
+    test[ 9] Prostate_Patient_54: RelErr=0.0085  (4.5s)
+    test[10] Prostate_Patient_42: RelErr=0.0051  (4.5s)
+    test[11] Prostate_Patient_51: RelErr=0.0051  (5.1s)
+    test[12] Prostate_Patient_97: RelErr=0.0102  (4.1s)
+    test[13] Prostate_Patient_12: RelErr=0.0031  (12.2s)
+    test[14] Prostate_Patient_46: RelErr=0.0046  (4.2s)
+    test[15] Prostate_Patient_4: RelErr=0.0095  (6.8s)
+    test[16] Prostate_Patient_21: RelErr=0.0094  (10.6s)
+    test[17] Prostate_Patient_122: RelErr=0.0055  (23.0s)
+    test[18] Prostate_Patient_109: RelErr=0.0021  (5.9s)
+    test[19] Prostate_Patient_90: RelErr=0.0052  (2.8s)
+    Mean RelErr = 0.0069  (20/20 valid, 139.9s total)
+
+  -- N=6, rho=3, method=kkt --
+    Training: 6 patients
+  patients used=6  comp-slack resid=1.0623e+10
+  alpha_hat (sign-constrained): [0.262  0.4868 0.1714 0.0415 0.0382 0.    ]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=3.89e+02  leverage shares=[0.    0.235 0.221 0.131 0.199 0.213]
+  unidentified direction (|smallest eigvec|): [0.464 0.847 0.248 0.059 0.052 0.005]
+    alpha_hat = [0.262  0.4868 0.1714 0.0415 0.0382 0.    ]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.5822  (8.8s)
+    test[ 1] Prostate_Patient_32: RelErr=0.5858  (4.3s)
+    test[ 2] Prostate_Patient_60: RelErr=0.6270  (3.6s)
+    test[ 3] Prostate_Patient_72: RelErr=0.5968  (2.4s)
+    test[ 4] Prostate_Patient_95: RelErr=0.6290  (3.0s)
+    test[ 5] Prostate_Patient_123: RelErr=0.6393  (5.4s)
+    test[ 6] Prostate_Patient_53: RelErr=0.5623  (6.4s)
+    test[ 7] Prostate_Patient_55: RelErr=0.7496  (2.9s)
+    test[ 8] Prostate_Patient_36: RelErr=0.7553  (6.2s)
+    test[ 9] Prostate_Patient_54: RelErr=0.6593  (3.3s)
+    test[10] Prostate_Patient_42: RelErr=0.7915  (3.9s)
+    test[11] Prostate_Patient_51: RelErr=0.5268  (4.6s)
+    test[12] Prostate_Patient_97: RelErr=0.6380  (3.4s)
+    test[13] Prostate_Patient_12: RelErr=0.5585  (16.6s)
+    test[14] Prostate_Patient_46: RelErr=0.6186  (4.3s)
+    test[15] Prostate_Patient_4: RelErr=0.6586  (7.2s)
+    test[16] Prostate_Patient_21: RelErr=0.6154  (11.4s)
+    test[17] Prostate_Patient_122: RelErr=0.7133  (20.5s)
+    test[18] Prostate_Patient_109: RelErr=0.6350  (5.4s)
+    test[19] Prostate_Patient_90: RelErr=0.5526  (2.6s)
+    Mean RelErr = 0.6348  (20/20 valid, 141.9s total)
+
+  -- N=7, rho=1, method=kkt --
+    Training: 7 patients
+  patients used=7  comp-slack resid=7.0603e+03
+  alpha_hat (sign-constrained): [0.1327 0.2363 0.0599 0.49   0.028  0.0531]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.28e+02  leverage shares=[0.004 0.094 0.177 0.144 0.206 0.216 0.158]
+  unidentified direction (|smallest eigvec|): [0.124 0.102 0.027 0.985 0.05  0.037]
+    alpha_hat = [0.1327 0.2363 0.0599 0.49   0.028  0.0531]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=1.1049  (3.0s)
+    test[ 1] Prostate_Patient_32: RelErr=1.1032  (1.9s)
+    test[ 2] Prostate_Patient_60: RelErr=1.1873  (1.5s)
+    test[ 3] Prostate_Patient_72: RelErr=1.2238  (0.9s)
+    test[ 4] Prostate_Patient_95: RelErr=0.9791  (1.7s)
+    test[ 5] Prostate_Patient_123: RelErr=1.0922  (2.8s)
+    test[ 6] Prostate_Patient_53: RelErr=1.0802  (3.1s)
+    test[ 7] Prostate_Patient_55: RelErr=1.0248  (1.7s)
+    test[ 8] Prostate_Patient_36: RelErr=1.1631  (1.0s)
+    test[ 9] Prostate_Patient_54: RelErr=1.0719  (1.1s)
+    test[10] Prostate_Patient_42: RelErr=1.0836  (1.4s)
+    test[11] Prostate_Patient_51: RelErr=1.1140  (1.6s)
+    test[12] Prostate_Patient_97: RelErr=1.2073  (0.8s)
+    test[13] Prostate_Patient_12: RelErr=1.0502  (5.3s)
+    test[14] Prostate_Patient_46: RelErr=1.0116  (1.6s)
+    test[15] Prostate_Patient_4: RelErr=0.9743  (3.2s)
+    test[16] Prostate_Patient_21: RelErr=1.0229  (4.4s)
+    test[17] Prostate_Patient_122: RelErr=1.0757  (6.7s)
+    test[18] Prostate_Patient_109: RelErr=1.0977  (1.8s)
+    test[19] Prostate_Patient_90: RelErr=1.0319  (1.1s)
+    Mean RelErr = 1.0850  (20/20 valid, 54.4s total)
+
+  -- N=7, rho=2, method=kkt --
+    Training: 7 patients
+  patients used=7  comp-slack resid=3.6515e+00
+  alpha_hat (sign-constrained): [0.3176 0.3175 0.1588 0.0792 0.0794 0.0476]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=8.86e+07  leverage shares=[0.    0.133 0.175 0.117 0.223 0.218 0.134]
+  unidentified direction (|smallest eigvec|): [0.646 0.646 0.323 0.161 0.161 0.097]
+    alpha_hat = [0.3176 0.3175 0.1588 0.0792 0.0794 0.0476]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.0043  (5.8s)
+    test[ 1] Prostate_Patient_32: RelErr=0.0061  (3.2s)
+    test[ 2] Prostate_Patient_60: RelErr=0.0050  (4.3s)
+    test[ 3] Prostate_Patient_72: RelErr=0.0171  (2.6s)
+    test[ 4] Prostate_Patient_95: RelErr=0.0145  (3.2s)
+    test[ 5] Prostate_Patient_123: RelErr=0.0059  (4.6s)
+    test[ 6] Prostate_Patient_53: RelErr=0.0048  (5.1s)
+    test[ 7] Prostate_Patient_55: RelErr=0.0044  (2.1s)
+    test[ 8] Prostate_Patient_36: RelErr=0.0025  (2.2s)
+    test[ 9] Prostate_Patient_54: RelErr=0.0127  (2.3s)
+    test[10] Prostate_Patient_42: RelErr=0.0076  (2.5s)
+    test[11] Prostate_Patient_51: RelErr=0.0055  (2.9s)
+    test[12] Prostate_Patient_97: RelErr=0.0101  (2.4s)
+    test[13] Prostate_Patient_12: RelErr=0.0188  (11.9s)
+    test[14] Prostate_Patient_46: RelErr=0.0044  (3.1s)
+    test[15] Prostate_Patient_4: RelErr=0.0025  (5.1s)
+    test[16] Prostate_Patient_21: RelErr=0.0035  (9.7s)
+    test[17] Prostate_Patient_122: RelErr=0.0227  (18.6s)
+    test[18] Prostate_Patient_109: RelErr=0.0058  (4.5s)
+    test[19] Prostate_Patient_90: RelErr=0.0101  (2.5s)
+    Mean RelErr = 0.0084  (20/20 valid, 106.6s total)
+
+  -- N=7, rho=3, method=kkt --
+    Training: 7 patients
+  patients used=7  comp-slack resid=1.7248e+10
+  alpha_hat (sign-constrained): [0.2431 0.5547 0.1374 0.0305 0.0343 0.    ]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=3.08e+02  leverage shares=[0.    0.195 0.183 0.108 0.165 0.176 0.173]
+  unidentified direction (|smallest eigvec|): [0.236 0.961 0.137 0.046 0.03  0.003]
+    alpha_hat = [0.2431 0.5547 0.1374 0.0305 0.0343 0.    ]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.5913  (5.8s)
+    test[ 1] Prostate_Patient_32: RelErr=0.5938  (2.5s)
+    test[ 2] Prostate_Patient_60: RelErr=0.6231  (2.7s)
+    test[ 3] Prostate_Patient_72: RelErr=0.6113  (1.9s)
+    test[ 4] Prostate_Patient_95: RelErr=0.6243  (3.0s)
+    test[ 5] Prostate_Patient_123: RelErr=0.6780  (4.7s)
+    test[ 6] Prostate_Patient_53: RelErr=0.5579  (4.6s)
+    test[ 7] Prostate_Patient_55: RelErr=0.7582  (1.9s)
+    test[ 8] Prostate_Patient_36: RelErr=0.8167  (2.5s)
+    test[ 9] Prostate_Patient_54: RelErr=0.6800  (2.4s)
+    test[10] Prostate_Patient_42: RelErr=0.7870  (1.9s)
+    test[11] Prostate_Patient_51: RelErr=0.5274  (4.4s)
+    test[12] Prostate_Patient_97: RelErr=0.6203  (1.7s)
+    test[13] Prostate_Patient_12: RelErr=0.5885  (10.4s)
+    test[14] Prostate_Patient_46: RelErr=0.6174  (3.3s)
+    test[15] Prostate_Patient_4: RelErr=0.6707  (4.2s)
+    test[16] Prostate_Patient_21: RelErr=0.6072  (6.1s)
+    test[17] Prostate_Patient_122: RelErr=0.7332  (9.0s)
+    test[18] Prostate_Patient_109: RelErr=0.6405  (3.7s)
+    test[19] Prostate_Patient_90: RelErr=0.5399  (2.1s)
+    Mean RelErr = 0.6433  (20/20 valid, 95.0s total)
+
+  -- N=8, rho=1, method=kkt --
+    Training: 8 patients
+  patients used=8  comp-slack resid=7.9752e+03
+  alpha_hat (sign-constrained): [0.1412 0.2219 0.0608 0.4935 0.0229 0.0597]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.29e+02  leverage shares=[0.003 0.083 0.155 0.126 0.181 0.189 0.138 0.125]
+  unidentified direction (|smallest eigvec|): [0.126 0.106 0.033 0.983 0.058 0.045]
+    alpha_hat = [0.1412 0.2219 0.0608 0.4935 0.0229 0.0597]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=1.0911  (3.0s)
+    test[ 1] Prostate_Patient_32: RelErr=1.0701  (1.7s)
+    test[ 2] Prostate_Patient_60: RelErr=1.2001  (1.2s)
+    test[ 3] Prostate_Patient_72: RelErr=1.2283  (0.9s)
+    test[ 4] Prostate_Patient_95: RelErr=1.0040  (1.4s)
+    test[ 5] Prostate_Patient_123: RelErr=1.0726  (2.3s)
+    test[ 6] Prostate_Patient_53: RelErr=1.0744  (2.9s)
+    test[ 7] Prostate_Patient_55: RelErr=1.0261  (1.5s)
+    test[ 8] Prostate_Patient_36: RelErr=1.1764  (1.0s)
+    test[ 9] Prostate_Patient_54: RelErr=1.0716  (1.3s)
+    test[10] Prostate_Patient_42: RelErr=1.0646  (1.5s)
+    test[11] Prostate_Patient_51: RelErr=1.1043  (1.9s)
+    test[12] Prostate_Patient_97: RelErr=1.2375  (1.0s)
+    test[13] Prostate_Patient_12: RelErr=1.0415  (4.6s)
+    test[14] Prostate_Patient_46: RelErr=1.0172  (1.6s)
+    test[15] Prostate_Patient_4: RelErr=0.9392  (2.7s)
+    test[16] Prostate_Patient_21: RelErr=1.0105  (3.8s)
+    test[17] Prostate_Patient_122: RelErr=1.0738  (5.6s)
+    test[18] Prostate_Patient_109: RelErr=1.0628  (1.6s)
+    test[19] Prostate_Patient_90: RelErr=1.0309  (1.0s)
+    Mean RelErr = 1.0798  (20/20 valid, 49.0s total)
+
+  -- N=8, rho=2, method=kkt --
+    Training: 8 patients
+  patients used=8  comp-slack resid=3.8295e+00
+  alpha_hat (sign-constrained): [0.3176 0.3175 0.1588 0.0793 0.0794 0.0476]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=1.00e+08  leverage shares=[0.    0.115 0.152 0.102 0.194 0.189 0.117 0.132]
+  unidentified direction (|smallest eigvec|): [0.646 0.646 0.323 0.161 0.161 0.097]
+    alpha_hat = [0.3176 0.3175 0.1588 0.0793 0.0794 0.0476]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.0074  (4.7s)
+    test[ 1] Prostate_Patient_32: RelErr=0.0061  (2.7s)
+    test[ 2] Prostate_Patient_60: RelErr=0.0045  (2.8s)
+    test[ 3] Prostate_Patient_72: RelErr=0.0171  (2.1s)
+    test[ 4] Prostate_Patient_95: RelErr=0.0128  (2.6s)
+    test[ 5] Prostate_Patient_123: RelErr=0.0066  (4.7s)
+    test[ 6] Prostate_Patient_53: RelErr=0.0084  (4.0s)
+    test[ 7] Prostate_Patient_55: RelErr=0.0031  (1.6s)
+    test[ 8] Prostate_Patient_36: RelErr=0.0029  (2.0s)
+    test[ 9] Prostate_Patient_54: RelErr=0.0135  (2.1s)
+    test[10] Prostate_Patient_42: RelErr=0.0051  (2.3s)
+    test[11] Prostate_Patient_51: RelErr=0.0048  (2.6s)
+    test[12] Prostate_Patient_97: RelErr=0.0100  (1.9s)
+    test[13] Prostate_Patient_12: RelErr=0.0188  (7.7s)
+    test[14] Prostate_Patient_46: RelErr=0.0044  (2.2s)
+    test[15] Prostate_Patient_4: RelErr=0.0046  (4.0s)
+    test[16] Prostate_Patient_21: RelErr=0.0051  (5.9s)
+    test[17] Prostate_Patient_122: RelErr=0.0045  (11.5s)
+    test[18] Prostate_Patient_109: RelErr=0.0045  (2.6s)
+    test[19] Prostate_Patient_90: RelErr=0.0053  (1.4s)
+    Mean RelErr = 0.0075  (20/20 valid, 78.9s total)
+
+  -- N=8, rho=3, method=kkt --
+    Training: 8 patients
+  patients used=8  comp-slack resid=2.0027e+10
+  alpha_hat (sign-constrained): [0.2639 0.5193 0.1449 0.0362 0.0358 0.    ]
+  true alpha/sum:               [0.2857 0.2857 0.1429 0.1429 0.0714 0.0714]
+  cond(M)=2.81e+02  leverage shares=[0.    0.173 0.163 0.097 0.147 0.157 0.154 0.108]
+  unidentified direction (|smallest eigvec|): [0.277 0.945 0.16  0.056 0.034 0.002]
+    alpha_hat = [0.2639 0.5193 0.1449 0.0362 0.0358 0.    ]
+    True alpha= [20.0, 20.0, 10.0, 10.0, 5.0, 5.0]
+    test[ 0] Prostate_Patient_41: RelErr=0.5887  (6.1s)
+    test[ 1] Prostate_Patient_32: RelErr=0.5830  (2.8s)
+    test[ 2] Prostate_Patient_60: RelErr=0.6229  (4.1s)
+    test[ 3] Prostate_Patient_72: RelErr=0.6030  (2.5s)
+    test[ 4] Prostate_Patient_95: RelErr=0.6280  (2.1s)
+    test[ 5] Prostate_Patient_123: RelErr=0.6333  (3.8s)
+    test[ 6] Prostate_Patient_53: RelErr=0.5550  (4.3s)
+    test[ 7] Prostate_Patient_55: RelErr=0.7596  (1.9s)
+    test[ 8] Prostate_Patient_36: RelErr=0.7847  (2.0s)
+    test[ 9] Prostate_Patient_54: RelErr=0.6688  (2.1s)
+    test[10] Prostate_Patient_42: RelErr=0.7917  (3.3s)
+    test[11] Prostate_Patient_51: RelErr=0.5241  (4.4s)
+    test[12] Prostate_Patient_97: RelErr=0.6253  (2.1s)
+    test[13] Prostate_Patient_12: RelErr=0.5687  (10.2s)
+    test[14] Prostate_Patient_46: RelErr=0.6187  (3.4s)
+    test[15] Prostate_Patient_4: RelErr=0.6645  (4.3s)
+    test[16] Prostate_Patient_21: RelErr=0.6141  (8.1s)
+    test[17] Prostate_Patient_122: RelErr=0.7219  (20.3s)
+    test[18] Prostate_Patient_109: RelErr=0.6349  (4.1s)
+    test[19] Prostate_Patient_90: RelErr=0.5484  (2.6s)
+    Mean RelErr = 0.6370  (20/20 valid, 104.2s total)
+Saved CSV: results/parametric_comparison\parametric_mape_nested_kkt.csv
+Saved figure: results/parametric_comparison\parametric_mape_figure_kkt.pdf
+
+===== SUMMARY =====
+   N         rho=1         rho=2         rho=3
+   5         1.064%       0.008%       0.629%
+   6         1.073%       0.007%       0.635%
+   7         1.085%       0.008%       0.643%
+   8         1.080%       0.007%       0.637%

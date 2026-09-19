@@ -86,3 +86,11 @@ texput.log
 
 # Result figures inside the release staging area ARE versioned (override global *.png)
 !release_code/**/*.png
+
+# =============================================================
+# Paper artifacts that ARE versioned (override the global *.npy / *.log rules)
+# =============================================================
+!healthcare_synthetic/paper_run/**
+!portpy_clinical/results/**
+!consumer_choice/results/**
+!consumer_choice/data/**

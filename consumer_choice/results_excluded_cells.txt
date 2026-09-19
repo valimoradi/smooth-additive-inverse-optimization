@@ -1,0 +1,5 @@
+# Additive+Smooth cells whose Model-2 bisection terminated inside a MOSEK infeasible/SolverError band (beta*=4.1015625 identical in all four)
+smooth,not-perturbed,200,11,Additive+Smooth
+smooth,not-perturbed,200,16,Additive+Smooth
+smooth,not-perturbed,200,18,Additive+Smooth
+smooth,perturbed,200,14,Additive+Smooth

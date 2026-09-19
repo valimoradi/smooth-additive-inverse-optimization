@@ -1,0 +1,140 @@
+START Fri Jul 17 23:30:35 EDT 2026
+(CVXPY) Jul 17 11:30:37 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+Test set: 20 patients
+Using canonical test set: 20 patients
+
+  -- N=2, rho=1, method=kkt --
+    Training: 2 patients
+(CVXPY) Jul 17 11:30:37 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+  patients used=2  comp-slack resid=1.7565e+03
+  alpha_hat (sign-constrained): [0.199  0.2972 0.0705 0.3334 0.0444 0.0555]
+  true alpha/sum (per function):[0.3175 0.3175 0.1587 0.0794 0.0794 0.0476]
+  cond(M)=2.72e+01  per-patient leverage shares (N entries)=[0.04 0.96]
+  unidentified direction (|smallest eigvec|, per function): [0.17  0.437 0.06  0.877 0.024 0.079]
+    alpha_hat = [0.199  0.2972 0.0705 0.3334 0.0444 0.0555]
+    True alpha (per function) = [20. 20. 10.  5.  5.  3.]
+(CVXPY) Jul 17 11:31:03 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 0] Prostate_Patient_41: RelErr=0.2869  (3.8s)
+(CVXPY) Jul 17 11:31:07 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 1] Prostate_Patient_32: RelErr=0.4334  (2.1s)
+(CVXPY) Jul 17 11:31:09 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 2] Prostate_Patient_60: RelErr=0.3582  (2.0s)
+(CVXPY) Jul 17 11:31:11 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 3] Prostate_Patient_72: RelErr=0.4526  (1.3s)
+(CVXPY) Jul 17 11:31:13 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 4] Prostate_Patient_95: RelErr=0.3270  (1.8s)
+(CVXPY) Jul 17 11:31:14 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 5] Prostate_Patient_123: RelErr=0.3018  (3.2s)
+(CVXPY) Jul 17 11:31:18 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 6] Prostate_Patient_53: RelErr=0.2770  (3.4s)
+(CVXPY) Jul 17 11:31:21 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 7] Prostate_Patient_55: RelErr=0.2510  (1.9s)
+(CVXPY) Jul 17 11:31:23 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 8] Prostate_Patient_36: RelErr=0.3273  (1.6s)
+(CVXPY) Jul 17 11:31:25 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 9] Prostate_Patient_54: RelErr=0.3581  (1.7s)
+(CVXPY) Jul 17 11:31:26 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[10] Prostate_Patient_42: RelErr=0.3775  (2.2s)
+(CVXPY) Jul 17 11:31:28 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[11] Prostate_Patient_51: RelErr=0.3071  (2.7s)
+(CVXPY) Jul 17 11:31:31 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[12] Prostate_Patient_97: RelErr=0.3772  (1.5s)
+(CVXPY) Jul 17 11:31:33 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[13] Prostate_Patient_12: RelErr=0.2774  (6.5s)
+(CVXPY) Jul 17 11:31:39 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[14] Prostate_Patient_46: RelErr=0.2778  (2.4s)
+(CVXPY) Jul 17 11:31:42 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[15] Prostate_Patient_4: RelErr=0.2664  (3.5s)
+(CVXPY) Jul 17 11:31:45 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[16] Prostate_Patient_21: RelErr=0.2580  (5.4s)
+(CVXPY) Jul 17 11:31:51 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[17] Prostate_Patient_122: RelErr=0.2612  (8.1s)
+(CVXPY) Jul 17 11:31:59 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[18] Prostate_Patient_109: RelErr=0.3041  (2.1s)
+(CVXPY) Jul 17 11:32:01 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[19] Prostate_Patient_90: RelErr=0.3429  (1.5s)
+    Mean RelErr = 0.3212  (20/20 valid, 84.9s total)
+
+  -- N=2, rho=2, method=kkt --
+    Training: 2 patients
+(CVXPY) Jul 17 11:32:02 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+  patients used=2  comp-slack resid=1.0202e+00
+  alpha_hat (sign-constrained): [0.3174 0.3175 0.1587 0.0795 0.0794 0.0475]
+  true alpha/sum (per function):[0.3175 0.3175 0.1587 0.0794 0.0794 0.0476]
+  cond(M)=2.27e+07  per-patient leverage shares (N entries)=[0. 1.]
+  unidentified direction (|smallest eigvec|, per function): [0.646 0.646 0.323 0.161 0.161 0.097]
+    alpha_hat = [0.3174 0.3175 0.1587 0.0795 0.0794 0.0475]
+    True alpha (per function) = [20. 20. 10.  5.  5.  3.]
+(CVXPY) Jul 17 11:32:37 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 0] Prostate_Patient_41: RelErr=0.0004  (6.7s)
+(CVXPY) Jul 17 11:32:44 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 1] Prostate_Patient_32: RelErr=0.0004  (3.6s)
+(CVXPY) Jul 17 11:32:47 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 2] Prostate_Patient_60: RelErr=0.0005  (3.3s)
+(CVXPY) Jul 17 11:32:51 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 3] Prostate_Patient_72: RelErr=0.0006  (2.7s)
+(CVXPY) Jul 17 11:32:53 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 4] Prostate_Patient_95: RelErr=0.0006  (3.5s)
+(CVXPY) Jul 17 11:32:57 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 5] Prostate_Patient_123: RelErr=0.0004  (4.9s)
+(CVXPY) Jul 17 11:33:02 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 6] Prostate_Patient_53: RelErr=0.0004  (5.6s)
+(CVXPY) Jul 17 11:33:07 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 7] Prostate_Patient_55: RelErr=0.0003  (2.2s)
+(CVXPY) Jul 17 11:33:10 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 8] Prostate_Patient_36: RelErr=0.0007  (2.4s)
+(CVXPY) Jul 17 11:33:12 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[ 9] Prostate_Patient_54: RelErr=0.0004  (3.0s)
+(CVXPY) Jul 17 11:33:15 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[10] Prostate_Patient_42: RelErr=0.0004  (3.3s)
+(CVXPY) Jul 17 11:33:18 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[11] Prostate_Patient_51: RelErr=0.0004  (3.6s)
+(CVXPY) Jul 17 11:33:22 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[12] Prostate_Patient_97: RelErr=0.0004  (3.3s)
+(CVXPY) Jul 17 11:33:25 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[13] Prostate_Patient_12: RelErr=0.0002  (11.0s)
+(CVXPY) Jul 17 11:33:36 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[14] Prostate_Patient_46: RelErr=0.0004  (3.5s)
+(CVXPY) Jul 17 11:33:40 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')
+    test[15] Prostate_Patient_4: RelErr=0.0002  (5.3s)
+(CVXPY) Jul 17 11:33:45 PM: Encountered unexpected exception importing solver DIFFCP:
+ImportError('DLL load failed while importing _diffcp: The specified module could not be found.')

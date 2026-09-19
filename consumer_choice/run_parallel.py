@@ -7,15 +7,19 @@ necessary because the non-additive Smooth model is slow at large N and the
 replication protocol multiplies the cell count by Config.n_reps. MOSEK is
 pinned to one thread per solve so the pool does not oversubscribe cores.
 
-Outputs land in ./figures and ./results, matching the sequential entry point:
+Outputs land in ./results_<out-name>_<cert> and ./figures_<out-name>_<cert> [W6b], so
+first_order and c8 runs never share files and the published ./results and ./figures stay intact:
   results_{utility}_{regime}.csv       aggregate (mean, SE per model/size)
   results_{utility}_{regime}_reps.csv  long format, one row per (rep,size,model)
-  figures/<panel>.pdf                  mean curves with +-1 SE bands
+  _cells_checkpoint.csv                per-cell resume file (successful cells)
+  _cells_log.jsonl                     record-only per-cell log, never read back [W6d]
+  figures_.../<panel>.pdf              mean curves with +-1 SE bands
+Data caches are read from --cache-dir (or CONSUMER_CACHE_DIR); default this folder [W6a].
 
-Usage: python run_parallel.py [--utilities smooth nonsmooth] [--reps R]
-                              [--sizes 20 40 ...]
+Usage: python run_parallel.py --out-name NAME [--cert {first_order,c8}] [--cache-dir DIR]
+                              [--utilities smooth nonsmooth] [--reps R] [--sizes 20 40 ...]
 """
-import os, sys, time, argparse, dataclasses
+import os, sys, time, argparse, dataclasses, json
 os.environ.setdefault("PYTHONUNBUFFERED", "1")
 import numpy as np
 import multiprocessing as mp
@@ -55,9 +59,44 @@ def _append_checkpoint(key, err, beta):
                  f"{'' if beta is None else f'{beta:.6f}'}\n")
 
 
+def _append_log(key, err, beta, msg, dt, log):
+    """[W6d] Record-only per-cell log next to the checkpoint: one JSON line per attempted cell,
+    failed cells included. No decision reads it back.
+
+    ``records`` lists, in call order, the records opened in consumer_inverse_optimization:
+    model1 (eps0; smooth classes also the eps = 1.0 fallback), beta_probe (beta, eps*, guard),
+    model3 (eps in the program; smooth classes also beta0, escalation factor and beta; LP
+    classes get path = eps* or eps sweep here), fallback (Stage-1 solution returned, or no
+    beta bracket) and predict (recovered epsilon and beta). Each holds its _solve calls: one
+    [solver, status, exception] triple per attempt of the ladder MOSEK (CFG tolerances) ->
+    MOSEK (default tolerances), no ECOS step [S1]; a call is accepted iff its last status is optimal or
+    optimal_inaccurate. The predict record counts attempt paths instead of listing every
+    test-point solve.
+    """
+    # LP classes try eps* first iff Model 1 solved, then the eps sweep. The label follows the
+    # call order, because an eps* value can equal a sweep value (e.g. eps0 = 0).
+    star = any(r["event"] == "model1" and r.get("eps0") is not None for r in log)
+    for r in log:
+        if r["event"] == "model3" and "factor" not in r:
+            r["path"], star = ("eps*" if star else "eps sweep"), False
+        elif r["event"] == "predict":
+            counts = {}
+            for call in r.pop("solves"):
+                path = " > ".join(f"{s}:{st}" + (f"({ex})" if ex else "") for s, st, ex in call)
+                counts[path] = counts.get(path, 0) + 1
+            r["solve_paths"] = counts
+    u, name, regime, size, rep = key
+    line = dict(utility=u, model=name, regime=regime, size=size, rep=rep, data=cache_path(u),
+                RelL2=None if err != err else err, beta_star=beta, error=msg,
+                seconds=round(dt, 1), records=log)
+    with open(os.path.join(RES, "_cells_log.jsonl"), "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(line, default=str) + "\n")
+
+
 def cache_path(utility):
     # The historical smooth-utility cache predates the per-utility naming.
-    return os.path.join(HERE, "_dataset_cache.npz" if utility == "smooth"
+    folder = os.environ.get("CONSUMER_CACHE_DIR", HERE)   # [W6a] --cache-dir; workers inherit it
+    return os.path.join(folder, "_dataset_cache.npz" if utility == "smooth"
                         else f"_dataset_cache_{utility}.npz")
 
 
@@ -112,10 +151,10 @@ def _prep_cache(utility):
     print(f"dataset[{utility}]: built X_pool={Xp.shape}", flush=True)
 
 
-def _worker_init(utilities, threads=1):
+def _worker_init(utilities, threads=1, cert="first_order"):
     import consumer_inverse_optimization as C
     params = dict(C.CFG.mosek_params); params["MSK_IPAR_NUM_THREADS"] = threads
-    C.CFG = dataclasses.replace(C.CFG, mosek_params=params)
+    C.CFG = dataclasses.replace(C.CFG, mosek_params=params, cert=cert)   # [W6b] --cert
     global _C, _D
     _C = C
     _D = {u: np.load(cache_path(u)) for u in utilities}
@@ -129,13 +168,15 @@ def solve_cell(task):
     mdl = next(m for m in C.MODELS if m.name == model_name)
     idx = C.rep_permutation(rep, pool.shape[0])
     Z, P = pool[idx[:size]], Pp[idx[:size]]
+    C.SOLVE_LOG = log = []                  # [W6d] record-only log of this cell (_append_log)
     t0 = time.time()
     try:
         rec = mdl.solve(Z, P)
+        C._log("predict", epsilon=rec.epsilon, beta=rec.beta)   # [W6d]
         return (*task, C.rel_l2(Xt, mdl.predict(rec, Z, Pt)), rec.beta, "",
-                time.time() - t0)
+                time.time() - t0, log)
     except Exception as e:
-        return (*task, float("nan"), None, f"{type(e).__name__}: {e}", time.time() - t0)
+        return (*task, float("nan"), None, f"{type(e).__name__}: {e}", time.time() - t0, log)
 
 
 def main():
@@ -144,7 +185,21 @@ def main():
                         choices=["smooth", "kicks3", "nonsmooth"])
     parser.add_argument("--reps", type=int, default=None)
     parser.add_argument("--sizes", nargs="+", type=int, default=None)
+    parser.add_argument("--out-name", required=True,                       # [W6b]
+                        help="run name: outputs go to results_NAME_CERT/ and figures_NAME_CERT/")
+    parser.add_argument("--cert", default="c8", choices=["first_order", "c8"])   # [W6b]
+    parser.add_argument("--cache-dir", default=None,                       # [W6a]
+                        help="folder holding the _dataset_cache*.npz files (default: this folder)")
     args = parser.parse_args()
+    if args.cache_dir is not None:                # [W6a] set before the pool, so workers inherit it
+        os.environ["CONSUMER_CACHE_DIR"] = os.path.abspath(args.cache_dir)
+        for u in args.utilities:
+            if not os.path.exists(cache_path(u)):
+                parser.error(f"missing data cache {cache_path(u)}")
+    global FIG, RES, CKPT                         # [W6b] per-run, per-cert output paths
+    FIG = os.path.join(HERE, f"figures_{args.out_name}_{args.cert}")
+    RES = os.path.join(HERE, f"results_{args.out_name}_{args.cert}")
+    CKPT = os.path.join(RES, "_cells_checkpoint.csv")
 
     os.makedirs(FIG, exist_ok=True)
     os.makedirs(RES, exist_ok=True)
@@ -165,18 +220,21 @@ def main():
     results = {(u, regime, name, size, rep): v
                for (u, name, regime, size, rep), v in ckpt.items()}
     tasks = [t for t in all_tasks if t not in ckpt]
-    nproc, threads = plan_cores(len(tasks))
+    nproc, _ = plan_cores(len(tasks))
+    threads = 1                                   # [W6c] one MOSEK thread per solve, always
     print(f"solving {len(tasks)} cells ({len(all_tasks) - len(tasks)} from checkpoint; "
           f"reps={n_reps}, sizes={sizes}) on {nproc} workers x {threads} MOSEK "
           f"thread(s) [{os.cpu_count()} cores detected]...", flush=True)
 
     t0, ndone = time.time(), 0
-    with mp.Pool(nproc, initializer=_worker_init, initargs=(args.utilities, threads)) as pool:
-        for u, name, regime, size, rep, err, beta, msg, dt in \
+    with mp.Pool(nproc, initializer=_worker_init,
+                 initargs=(args.utilities, threads, args.cert)) as pool:   # [W6b]
+        for u, name, regime, size, rep, err, beta, msg, dt, log in \
                 pool.imap_unordered(solve_cell, tasks):
             results[(u, regime, name, size, rep)] = (err, beta)
             if err == err:                      # checkpoint successes only
                 _append_checkpoint((u, name, regime, size, rep), err, beta)
+            _append_log((u, name, regime, size, rep), err, beta, msg, dt, log)   # [W6d] record only
             ndone += 1
             tag = f"RelL2={err:6.4f}" if err == err else f"FAIL {msg}"
             print(f"  [{ndone}/{len(tasks)}] [{u}/{regime:13s}/rep={rep:2d}/N={size:3d}/"
@@ -201,7 +259,7 @@ def main():
             C._write_reps_csv(os.path.join(RES, f"results_{u}_{regime}_reps.csv"),
                               sizes, errs, betas)
             C.plot_panel(sizes, errs, os.path.join(FIG, C.PANELS[(u, regime)]),
-                         title="")   # published panels carry no in-figure title
+                         title=f"{C.UTILITY_DISPLAY.get(u, u)} / {regime}")
     C.plot_legend(os.path.join(FIG, "legend.pdf"))
 
 

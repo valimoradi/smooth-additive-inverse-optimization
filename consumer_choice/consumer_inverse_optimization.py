@@ -47,9 +47,10 @@ The prediction is therefore regime-dependent:
   * smooth models (Smooth, Additive+Smooth)     -> perspective forward resolve
     (``predict_perspective``; uses ``delta``, ``lambda`` and ``beta``).
 
-Additivity is imposed in the inverse SOLVE (per-coordinate concavity), not by
-changing the prediction machinery. This keeps the ablation clean: additivity
-acts through the recovered values, smoothness through the reconstruction.
+The additive models (Additive, Additive+Smooth) resolve the same two forms
+componentwise, f = sum_k f_k: good k uses its own recovered values
+``delta_{j,k}`` (and gradients ``lambda_{j,k}``) and its own convex-combination
+weights (``predict_additive_convex_combination``, ``predict_additive_perspective``).
 
 UNPERTURBED vs PERTURBED
 ------------------------
@@ -145,8 +146,14 @@ class Config:
 
     # Inverse-model bounds / anchors.
     delta_anchor_stage1: float = 1000.0      # delta[1] in the epsilon-min stage
-    delta_anchor_stage2: float = 2000.0      # delta[1] in the sum-delta-max stage
+    # [W5] one normalization u = 1000 in every stage of every class (smooth classes read stage2)
+    delta_anchor_stage2: float = 1000.0      # delta[1] in the sum-delta-min stage [W2]
     beta_init: float = 1000.0                # large initial beta for the smooth bisection
+
+    # Suboptimality certificate [W3], stated for observed rows only [W5]. "first_order":
+    # the witness is the recovered gradient, lambda_i <= p_i and (p_i - lambda_i)^T z_i
+    # <= epsilon. "c8": a free witness mu_i (paper C4 joint, C8 additive; see _c8_rows).
+    cert: str = "c8"                         # [C8-default] author decision 2026-09-14: paper set-up
 
     # Solver tolerances. 1e-6 matches the generating notebooks; tighter (1e-8)
     # makes MOSEK declare the epsilon->0 problem non-optimal on *exact*
@@ -163,28 +170,51 @@ CFG = Config()
 
 _OPTIMAL = ("optimal", "optimal_inaccurate")
 
+# [W6d] Record-only per-cell log. run_parallel.py sets a fresh list per cell and writes it next to
+# the checkpoint; nothing in this file reads it back. None (the default) turns logging off.
+SOLVE_LOG = None
+
+
+def _log(event: str, **info) -> None:
+    """[W6d] Open a log record; the _solve calls that follow are listed in its 'solves'."""
+    if SOLVE_LOG is not None:
+        SOLVE_LOG.append(dict(event=event, solves=[], **info))
+
+
+def _log_note(**info) -> None:
+    """[W6d] Add values (eps0, fallback path) to the open log record."""
+    if SOLVE_LOG:
+        SOLVE_LOG[-1].update(info)
+
 
 # ======================================================================
-# Solver wrapper (MOSEK first, ECOS fallback)
+# Solver wrapper (MOSEK only [S1])
 # ======================================================================
 def _solve(prob: cp.Problem, use_params: bool = True) -> bool:
     """Solve in place; return True on (near-)optimal status.
 
-    Layered fallback: MOSEK at high precision, then MOSEK at default tolerances,
-    then ECOS. Exact (unperturbed) data at large N can make MOSEK return a
+    Layered fallback: MOSEK at high precision, then MOSEK at default tolerances
+    (no ECOS step [S1]). Exact (unperturbed) data at large N can make MOSEK return a
     non-optimal *status* (not an exception) under very tight tolerances, so we
     must retry on bad status, not only on exceptions.
     """
     attempts = []
     if use_params:
         attempts.append(dict(solver=cp.MOSEK, verbose=False, mosek_params=CFG.mosek_params))
-    attempts.append(dict(solver=cp.MOSEK, verbose=False))   # MOSEK default tolerances
-    attempts.append(dict(solver=cp.ECOS, verbose=False))
+    attempts.append(dict(solver=cp.MOSEK, verbose=False,    # MOSEK default tolerances
+                         mosek_params={k: v for k, v in CFG.mosek_params.items()
+                                       if k == "MSK_IPAR_NUM_THREADS"}))   # [W6c] thread pin
+    # [S1] no ECOS step: MOSEK only (author decision 2026-09-14)
+    tried = []                                   # [W6d] record only: (solver, status, exception)
+    if SOLVE_LOG:
+        SOLVE_LOG[-1]["solves"].append(tried)
     for kw in attempts:
         try:
             prob.solve(**kw)
-        except Exception:
+        except Exception as exc:
+            tried.append((kw["solver"], prob.status, type(exc).__name__))   # [W6d]
             continue
+        tried.append((kw["solver"], prob.status, None))                      # [W6d]
         if prob.status in _OPTIMAL:
             return True
     return prob.status in _OPTIMAL
@@ -382,7 +412,8 @@ class Recovered:
     """Parameters of the imputed objective returned by every solver.
 
     ``delta`` is the 1-D vector of recovered function values (the global value
-    for the additive models). ``lambdas`` are the recovered subgradients;
+    for the additive models, whose per-good values (m, n) are ``delta_comp``).
+    ``lambdas`` are the recovered subgradients;
     ``beta`` is the smoothness. ``beta is None`` flags a non-smooth model, in
     which case ``lambdas`` is not used at prediction time (see module docstring).
     """
@@ -391,11 +422,12 @@ class Recovered:
     lambdas: Optional[np.ndarray] = None
     beta: Optional[float] = None
     epsilon: float = 0.0
+    delta_comp: Optional[np.ndarray] = None  # [W1] per-good values (m, n); additive models only
 
 
 # ======================================================================
 # Inverse solvers (one per model). Two stages: minimise epsilon, then
-# maximise sum(delta) at the fixed epsilon*. Smooth models add a beta search.
+# minimise sum(delta) at the fixed epsilon*. Smooth models add a beta search.
 # ======================================================================
 # On exact (unperturbed) data the epsilon-min problem occasionally fails (the
 # optimum sits on the boundary at epsilon ~ 0). When it does, we fall back to a
@@ -405,19 +437,64 @@ class Recovered:
 _EPS_FALLBACK = (1e-6, 1e-5, 1e-4, 1e-3, 1e-2)
 
 
+def _c8_rows(Z, P, beta_inv, eps_expr, delta, delta_g, lamb):
+    """Exact suboptimality certificate rows (CFG.cert == "c8") [W3].
+
+    One free witness mu_i per observed row i; rows 0 and 1 are the anchors, which
+    get no certificate row [W5], while j runs over every row. For the forward
+    problem min_{x>=0} p^T x - U(x) (delta stores U) the witness set is
+    0 <= mu_i <= p_i, and paper (C4) (joint, delta_g None) and (C8) (additive) read
+
+      joint:     delta_j - mu_i^T z_j + beta_inv ||mu_i - lambda_j||^2
+                     <= delta_i - p_i^T z_i + eps                          for all j,
+      additive:  delta_{j,k} - mu_{i,k} z_{j,k} + beta_inv (mu_{i,k} - lambda_{j,k})^2
+                     <= t_{i,k}                                            for all j, k,
+                 sum_k t_{i,k} <= delta_g,i - p_i^T z_i + eps,
+
+    with beta_inv = 1/(2 beta) for the smooth models and None (term dropped,
+    beta -> infinity) for the non-smooth models.
+    """
+    if CFG.cert != "c8":
+        raise ValueError(f"CFG.cert must be 'first_order' or 'c8', got {CFG.cert!r}")
+    m, n = Z.shape
+    mu = cp.Variable((m - 2, n), nonneg=True)            # witness per observed row
+    total = delta if delta_g is None else delta_g
+    rhs = total[2:] - np.sum(P[2:] * Z[2:], axis=1) + eps_expr
+    cons = [mu <= P[2:]]
+    if delta_g is None:
+        for a in range(m - 2):
+            piece = delta - Z @ mu[a]
+            if beta_inv is not None:
+                piece = piece + beta_inv * cp.sum(cp.square(mu[a] - lamb), axis=1)
+            cons.append(piece <= rhs[a])
+    else:
+        t = cp.Variable((m - 2, n))                      # epigraph of each good's max over j
+        for a in range(m - 2):
+            piece = delta - cp.multiply(Z, mu[a])
+            if beta_inv is not None:
+                piece = piece + beta_inv * cp.square(mu[a] - lamb)
+            cons.append(piece <= t[a])
+        cons.append(cp.sum(t, axis=1) <= rhs)
+    return cons
+
+
 def solve_convex_only(Z: np.ndarray, P: np.ndarray) -> Recovered:
     """Nonparametric convex model (Li 2019 baseline): no additivity, no smoothness."""
     m, n = Z.shape
 
     def build(delta, lamb, eps_expr, anchor):
-        cons = [delta >= 0, delta <= anchor, delta[0] == 0, delta[1] == anchor,
-                P >= lamb,
-                cp.sum(cp.multiply(P - lamb, Z), axis=1) <= eps_expr]
+        cons = [delta >= 0, delta <= anchor, delta[0] == 0, delta[1] == anchor]
+        if CFG.cert == "first_order":                    # [W3] author's rows, on observed rows 2: only [W5]
+            cons += [P[2:] >= lamb[2:],
+                     cp.sum(cp.multiply(P[2:] - lamb[2:], Z[2:]), axis=1) <= eps_expr]
+        else:                                            # [W3] exact certificate (C4)
+            cons += _c8_rows(Z, P, None, eps_expr, delta, None, lamb)
         for j in range(m):
             cons.append(delta[j] + (Z - Z[j]) @ lamb[j] >= delta)
         return cons
 
     # Stage 1: minimise epsilon.
+    _log("model1")                                              # [W6d] record only
     d1 = cp.Variable(m)
     l1 = cp.Variable((m, n), nonneg=True)
     eps = cp.Variable(nonneg=True)
@@ -425,16 +502,19 @@ def solve_convex_only(Z: np.ndarray, P: np.ndarray) -> Recovered:
                 if _solve(cp.Problem(cp.Minimize(eps),
                                      build(d1, l1, eps, CFG.delta_anchor_stage1)))
                 else None)
+    _log_note(eps0=eps_star)                                    # [W6d] record only
 
-    # Stage 2: maximise sum(delta), trying epsilon* first then the fallback sweep.
-    for eps_try in ([eps_star] if eps_star is not None else []) + list(_EPS_FALLBACK):
+    # Stage 2: minimise sum(delta), trying epsilon* first then the fallback sweep.
+    for eps_try in ([eps_star + 1e-6] if eps_star is not None else []) + list(_EPS_FALLBACK):  # [W4]
         d2 = cp.Variable(m)
         l2 = cp.Variable((m, n), nonneg=True)
-        if _solve(cp.Problem(cp.Maximize(cp.sum(d2)),
+        _log("model3", eps=eps_try)                              # [W6d] record only: eps in this program
+        if _solve(cp.Problem(cp.Minimize(cp.sum(d2)),  # [W2] conservative: min sum U
                              build(d2, l2, eps_try, CFG.delta_anchor_stage2))) \
                 and d2.value is not None:
             return Recovered(d2.value, l2.value, None, eps_try)
     if eps_star is not None and d1.value is not None:
+        _log("fallback", path="Model 3 failed at every eps; Stage-1 solution returned")   # [W6d]
         return Recovered(d1.value, l1.value, None, eps_star)
     raise RuntimeError("convex-only solve failed (Stage-1 and epsilon sweep)")
 
@@ -447,9 +527,12 @@ def solve_additive(Z: np.ndarray, P: np.ndarray) -> Recovered:
     def build(delta, delta_g, lamb, eps_expr, anchor):
         cons = [delta >= 0, delta <= anchor, delta_g >= 0, delta_g <= anchor,
                 delta_g == cp.sum(delta, axis=1),
-                delta_g[0] == 0, delta_g[1] == anchor,
-                P - lamb >= 0,
-                cp.sum(cp.multiply(P - lamb, Z), axis=1) <= eps_expr]
+                delta_g[0] == 0, delta_g[1] == anchor]
+        if CFG.cert == "first_order":                    # [W3] author's rows, on observed rows 2: only [W5]
+            cons += [P[2:] - lamb[2:] >= 0,
+                     cp.sum(cp.multiply(P[2:] - lamb[2:], Z[2:]), axis=1) <= eps_expr]
+        else:                                            # [W3] exact certificate (C8)
+            cons += _c8_rows(Z, P, None, eps_expr, delta, delta_g, lamb)
         for k in range(n):
             cur, nxt = order[k][:-1], order[k][1:]
             dz = Z[cur, k] - Z[nxt, k]
@@ -458,6 +541,7 @@ def solve_additive(Z: np.ndarray, P: np.ndarray) -> Recovered:
         return cons
 
     # Stage 1: minimise epsilon (ill-conditioned on exact data -> may fail).
+    _log("model1")                                              # [W6d] record only
     d1 = cp.Variable((m, n))
     dg1 = cp.Variable(m)
     l1 = cp.Variable((m, n), nonneg=True)
@@ -466,18 +550,21 @@ def solve_additive(Z: np.ndarray, P: np.ndarray) -> Recovered:
                 if _solve(cp.Problem(cp.Minimize(eps),
                                      build(d1, dg1, l1, eps, CFG.delta_anchor_stage1)))
                 else None)
+    _log_note(eps0=eps_star)                                    # [W6d] record only
 
-    # Stage 2: maximise sum(delta), epsilon* first then the fallback sweep.
+    # Stage 2: minimise sum(delta), epsilon* first then the fallback sweep.
     for eps_try in ([eps_star] if eps_star is not None else []) + list(_EPS_FALLBACK):
         d2 = cp.Variable((m, n))
         dg2 = cp.Variable(m)
         l2 = cp.Variable((m, n), nonneg=True)
-        if _solve(cp.Problem(cp.Maximize(cp.sum(dg2)),
+        _log("model3", eps=eps_try + 1e-6)                       # [W6d] record only: eps in this program
+        if _solve(cp.Problem(cp.Minimize(cp.sum(dg2)),  # [W2] conservative: min sum U
                              build(d2, dg2, l2, eps_try + 1e-6, CFG.delta_anchor_stage2))) \
                 and dg2.value is not None:
-            return Recovered(dg2.value, l2.value, None, eps_try)
+            return Recovered(dg2.value, l2.value, None, eps_try, delta_comp=d2.value)  # [W1]
     if eps_star is not None and dg1.value is not None:
-        return Recovered(dg1.value, l1.value, None, eps_star)
+        _log("fallback", path="Model 3 failed at every eps; Stage-1 solution returned")   # [W6d]
+        return Recovered(dg1.value, l1.value, None, eps_star, delta_comp=d1.value)  # [W1]
     raise RuntimeError("additive solve failed (Stage-1 and epsilon sweep)")
 
 
@@ -486,8 +573,12 @@ def _smooth_constraints(Z, P, beta_inv, eps_expr, delta, lamb, lam_opt):
     m = Z.shape[0]
     cons = [delta >= 0, delta <= CFG.delta_anchor_stage2,
             delta[0] == 0, delta[1] == CFG.delta_anchor_stage2,
-            lamb >= 0, lam_opt >= 0, P - lam_opt >= 0, P - lamb >= 0,
-            cp.sum(cp.multiply(P - lamb, Z), axis=1) <= eps_expr]
+            lamb >= 0, lam_opt >= 0, P - lam_opt >= 0]
+    if CFG.cert == "first_order":                        # [W3] author's rows, on observed rows 2: only [W5]
+        cons += [P[2:] - lamb[2:] >= 0,
+                 cp.sum(cp.multiply(P[2:] - lamb[2:], Z[2:]), axis=1) <= eps_expr]
+    else:                                                # [W3] exact certificate (C4)
+        cons += _c8_rows(Z, P, beta_inv, eps_expr, delta, None, lamb)
     for j in range(m):
         grad = (Z - Z[j]) @ lamb[j]
         penalty = beta_inv * cp.sum(cp.square(lamb - lamb[j]), axis=1)
@@ -501,8 +592,12 @@ def _additive_smooth_constraints(Z, P, beta_inv, eps_expr, delta, delta_g, lamb,
     cons = [delta >= 0, delta_g >= 0, delta_g <= CFG.delta_anchor_stage2,
             delta_g[0] == 0, delta_g[1] == CFG.delta_anchor_stage2,
             delta_g == cp.sum(delta, axis=1),
-            lamb >= 0, lam_opt >= 0, P - lam_opt >= 0, P - lamb >= 0,
-            cp.sum(cp.multiply(P - lamb, Z), axis=1) <= eps_expr]
+            lamb >= 0, lam_opt >= 0, P - lam_opt >= 0]
+    if CFG.cert == "first_order":                        # [W3] author's rows, on observed rows 2: only [W5]
+        cons += [P[2:] - lamb[2:] >= 0,
+                 cp.sum(cp.multiply(P[2:] - lamb[2:], Z[2:]), axis=1) <= eps_expr]
+    else:                                                # [W3] exact certificate (C8)
+        cons += _c8_rows(Z, P, beta_inv, eps_expr, delta, delta_g, lamb)
     for k in range(n):
         idx = np.argsort(Z[:, k])
         zk = Z[idx, k]
@@ -516,19 +611,26 @@ def _additive_smooth_constraints(Z, P, beta_inv, eps_expr, delta, delta_g, lamb,
 
 
 def _feasible_at_beta(Z, P, eps_val, beta_val, additive: bool) -> bool:
+    _log("beta_probe", beta=beta_val, eps=eps_val, guard=beta_val <= 1e-4)   # [W6d] record only
     if beta_val <= 1e-4:
         return False
     m, n = Z.shape
-    beta_inv = 1.0 / (2.0 * beta_val)
-    delta = cp.Variable((m, n)) if additive else cp.Variable(m)
-    lamb = cp.Variable((m, n))
-    lam_opt = cp.Variable((m, n))
-    if additive:
-        delta_g = cp.Variable(m)
-        cons = _additive_smooth_constraints(Z, P, beta_inv, eps_val, delta, delta_g, lamb, lam_opt)
-    else:
-        cons = _smooth_constraints(Z, P, beta_inv, eps_val, delta, lamb, lam_opt)
-    return _solve(cp.Problem(cp.Minimize(0), cons))
+    b = beta_val                        # [R5] author's Model 2 probe (synthetic code): a solve that does not end
+    for _ in range(3):                  # optimal/optimal_inaccurate is repeated at 1.1 * b, up to 3 solves
+        beta_inv = 1.0 / (2.0 * b)
+        delta = cp.Variable((m, n)) if additive else cp.Variable(m)
+        lamb = cp.Variable((m, n))
+        lam_opt = cp.Variable((m, n))
+        if additive:
+            delta_g = cp.Variable(m)
+            cons = _additive_smooth_constraints(Z, P, beta_inv, eps_val, delta, delta_g, lamb, lam_opt)
+        else:
+            cons = _smooth_constraints(Z, P, beta_inv, eps_val, delta, lamb, lam_opt)
+        if _solve(cp.Problem(cp.Minimize(0), cons)):
+            _log_note(feasible_at=b)            # [W6d] record only
+            return True
+        b *= 1.1
+    return False
 
 
 def _min_epsilon(Z, P, additive: bool) -> float:
@@ -543,8 +645,11 @@ def _min_epsilon(Z, P, additive: bool) -> float:
         cons = _additive_smooth_constraints(Z, P, beta_inv, eps, delta, delta_g, lamb, lam_opt)
     else:
         cons = _smooth_constraints(Z, P, beta_inv, eps, delta, lamb, lam_opt)
+    _log("model1", beta=CFG.beta_init)                          # [W6d] record only
     if _solve(cp.Problem(cp.Minimize(eps), cons)):
-        return max(float(eps.value), 1e-6) * 1.05
+        _log_note(eps0=None if eps.value is None else float(eps.value))   # [W6d]
+        return float(eps.value) + 1e-6          # [W4] epsilon* = epsilon0 + 1e-6
+    _log_note(fallback="min-eps solve failed; eps = 1.0")      # [W6d]
     return 1.0
 
 
@@ -556,6 +661,7 @@ def _beta_bisection(Z, P, eps_val, additive: bool, gap_tol: float) -> float:
             if _feasible_at_beta(Z, P, eps_val, high, additive):
                 break
         else:
+            _log("fallback", path="no beta bracket up to 32 * beta_init; beta0 = beta_init")  # [W6d]
             return CFG.beta_init
     low = 0.0
     for _ in range(15):
@@ -570,7 +676,7 @@ def _beta_bisection(Z, P, eps_val, additive: bool, gap_tol: float) -> float:
 
 
 # Stage-3 beta escalation: the bisected beta* sits on the feasibility boundary,
-# where the final maximize-sum-delta solve is occasionally ill-conditioned. We
+# where the final minimize-sum-delta solve is occasionally ill-conditioned. We
 # nudge beta upward by small factors until the solve is clean. This does not
 # reintroduce the approximation: beta stays at the smallest value that solves
 # reliably, not a huge constant.
@@ -581,14 +687,15 @@ def solve_smooth(Z: np.ndarray, P: np.ndarray) -> Recovered:
     """Smooth convex model: beta-smooth, no additivity."""
     m, n = Z.shape
     eps_val = _min_epsilon(Z, P, additive=False)
-    beta0 = _beta_bisection(Z, P, eps_val, additive=False, gap_tol=2.0)
+    beta0 = _beta_bisection(Z, P, eps_val, additive=False, gap_tol=0.5)  # [W4]
     for factor in _BETA_ESCALATION:
         beta = beta0 * factor
+        _log("model3", eps=eps_val, beta0=beta0, factor=factor, beta=beta)   # [W6d] record only
         delta = cp.Variable(m)
         lamb = cp.Variable((m, n))
         lam_opt = cp.Variable((m, n))
         cons = _smooth_constraints(Z, P, 1.0 / (2.0 * beta), eps_val, delta, lamb, lam_opt)
-        if _solve(cp.Problem(cp.Maximize(cp.sum(delta)), cons)) and delta.value is not None:
+        if _solve(cp.Problem(cp.Minimize(cp.sum(delta)), cons)) and delta.value is not None:  # [W2]
             return Recovered(delta.value, lamb.value, beta, eps_val)
     raise RuntimeError("smooth Stage-3 solve failed after beta escalation")
 
@@ -597,17 +704,18 @@ def solve_additive_smooth(Z: np.ndarray, P: np.ndarray) -> Recovered:
     """Additive smooth model: beta-smooth and additive."""
     m, n = Z.shape
     eps_val = _min_epsilon(Z, P, additive=True)
-    beta0 = _beta_bisection(Z, P, eps_val, additive=True, gap_tol=1.0)
+    beta0 = _beta_bisection(Z, P, eps_val, additive=True, gap_tol=0.5)  # [W4]
     for factor in _BETA_ESCALATION:
         beta = beta0 * factor
+        _log("model3", eps=eps_val, beta0=beta0, factor=factor, beta=beta)   # [W6d] record only
         delta = cp.Variable((m, n))
         delta_g = cp.Variable(m)
         lamb = cp.Variable((m, n))
         lam_opt = cp.Variable((m, n))
         cons = _additive_smooth_constraints(Z, P, 1.0 / (2.0 * beta), eps_val,
                                             delta, delta_g, lamb, lam_opt)
-        if _solve(cp.Problem(cp.Maximize(cp.sum(delta_g)), cons)) and delta_g.value is not None:
-            return Recovered(delta_g.value, lamb.value, beta, eps_val)
+        if _solve(cp.Problem(cp.Minimize(cp.sum(delta_g)), cons)) and delta_g.value is not None:  # [W2]
+            return Recovered(delta_g.value, lamb.value, beta, eps_val, delta_comp=delta.value)  # [W1]
     raise RuntimeError("additive-smooth Stage-3 solve failed after beta escalation")
 
 
@@ -616,7 +724,7 @@ def solve_additive_smooth(Z: np.ndarray, P: np.ndarray) -> Recovered:
 # ======================================================================
 def predict_convex_combination(Z: np.ndarray, delta: np.ndarray,
                                P_test: np.ndarray) -> np.ndarray:
-    """Value-based forward resolve for the NON-smooth models.
+    """Value-based forward resolve for the NON-smooth joint model (Convex only).
 
     Solves, per test price p,  min_z p^T z - delta^T alpha  over convex
     combinations  z = sum_j alpha_j z_j  of observed bundles. Uses the recovered
@@ -639,7 +747,7 @@ def predict_convex_combination(Z: np.ndarray, delta: np.ndarray,
 
 def predict_perspective(Z: np.ndarray, delta: np.ndarray, lambdas: np.ndarray,
                         beta: float, P_test: np.ndarray) -> np.ndarray:
-    """Perspective forward resolve for the SMOOTH models.
+    """Perspective forward resolve for the SMOOTH joint model (Smooth).
 
     Solves the conjugate (perspective) forward problem implied by the recovered
     (delta, lambda, beta); uses all three. Single convex-combination weight
@@ -654,6 +762,59 @@ def predict_perspective(Z: np.ndarray, delta: np.ndarray, lambdas: np.ndarray,
     v = x - (mu @ Z) - (mu @ lambdas) * beta_inv
     obj = cp.Minimize(p @ x + (beta / 2.0) * cp.sum_squares(cp.pos(-v)) + mu @ const)
     prob = cp.Problem(obj, [cp.sum(mu) == 1])
+    out = np.full((P_test.shape[0], n), np.nan)
+    for i in range(P_test.shape[0]):
+        p.value = P_test[i]
+        if _solve(prob):
+            out[i] = x.value
+    return out
+
+
+def predict_additive_convex_combination(Z: np.ndarray, delta_comp: np.ndarray,
+                                        P_test: np.ndarray) -> np.ndarray:
+    """[W1] Value-based forward resolve for the Additive model, per good.
+
+    f = sum_k f_k, where f_k is the beta -> infinity reconstruction from good
+    k's own values ``delta_comp[:, k]`` with gradient set C_k = R_+. Solves, per
+    test price p,
+        min  p^T x - sum_{j,k} A_{j,k} delta_{j,k}
+        s.t. sum_j A_{j,k} = 1,  sum_j A_{j,k} z_{j,k} <= x_k,  A, x >= 0,
+    i.e. one convex-combination weight vector ``A[:, k]`` per good. Gradients drop out.
+    """
+    m, n = Z.shape
+    x = cp.Variable(n, nonneg=True)
+    A = cp.Variable((m, n), nonneg=True)
+    p = cp.Parameter(n)
+    prob = cp.Problem(cp.Minimize(p @ x - cp.sum(cp.multiply(A, delta_comp))),
+                      [cp.sum(A, axis=0) == 1, cp.sum(cp.multiply(A, Z), axis=0) <= x])
+    out = np.full((P_test.shape[0], n), np.nan)
+    for i in range(P_test.shape[0]):
+        p.value = P_test[i]
+        if _solve(prob, use_params=True):
+            out[i] = x.value
+    return out
+
+
+def predict_additive_perspective(Z: np.ndarray, delta_comp: np.ndarray, lambdas: np.ndarray,
+                                 beta: float, P_test: np.ndarray) -> np.ndarray:
+    """[W1] Perspective forward resolve for the Additive+Smooth model, per good.
+
+    f = sum_k f_k, where f_k is the reconstruction from good k's own
+    (``delta_comp[:, k]``, ``lambdas[:, k]``, beta). This is the problem of
+    ``predict_perspective`` with one convex-combination weight vector ``M[:, k]``
+    per good instead of a single ``mu``; setting every ``M[:, k] = mu`` gives it
+    back with ``delta = delta_comp.sum(axis=1)``.
+    """
+    m, n = Z.shape
+    beta_inv = 1.0 / beta
+    const = -0.5 * beta_inv * lambdas ** 2 - delta_comp          # (m, n)
+    x = cp.Variable(n, nonneg=True)
+    M = cp.Variable((m, n), nonneg=True)
+    p = cp.Parameter(n)
+    v = x - cp.sum(cp.multiply(M, Z + lambdas * beta_inv), axis=0)
+    obj = cp.Minimize(p @ x + (beta / 2.0) * cp.sum_squares(cp.pos(-v))
+                      + cp.sum(cp.multiply(M, const)))
+    prob = cp.Problem(obj, [cp.sum(M, axis=0) == 1])
     out = np.full((P_test.shape[0], n), np.nan)
     for i in range(P_test.shape[0]):
         p.value = P_test[i]
@@ -677,8 +838,13 @@ class Model:
     def predict(self, rec: Recovered, Z: np.ndarray, P_test: np.ndarray) -> np.ndarray:
         # Regime-dependent prediction: smoothness => perspective form (uses
         # lambda, beta); otherwise value-based forward resolve (delta only).
+        # [W1] Additive models resolve componentwise from the per-good values.
         if rec.beta is None:
+            if self.additive:
+                return predict_additive_convex_combination(Z, rec.delta_comp, P_test)
             return predict_convex_combination(Z, rec.delta, P_test)
+        if self.additive:
+            return predict_additive_perspective(Z, rec.delta_comp, rec.lambdas, rec.beta, P_test)
         return predict_perspective(Z, rec.delta, rec.lambdas, rec.beta, P_test)
 
 
@@ -760,16 +926,11 @@ def run_panel(utility: str, regime: str, X_pool, P_pool, X_test, P_test,
 # ======================================================================
 # Plotting
 # ======================================================================
-BAND_SE = 2.0        # band half-width in standard errors (paper: "two standard errors")
-BAND_ALPHA = 0.25    # 2026-09-05: was +-1 SE at 0.18, invisible under the line at print size
-
-
 def plot_panel(sizes, errs, out_path: str, title: str = "") -> None:
-    """One panel: per-model mean rel-L2 across replications with a +-BAND_SE band.
+    """One panel: per-model mean rel-L2 across replications with a +-1 SE band.
 
     ``errs[model]`` is an (n_reps, n_sizes) array; a 1-D array (single rep,
-    the legacy layout) is accepted and plotted without a band. ``title`` is a
-    debugging aid only; the published panels are written with title="".
+    the legacy layout) is accepted and plotted without a band.
     """
     fig, ax = plt.subplots(figsize=(7, 4))
     xs = np.asarray(sizes, float)
@@ -782,9 +943,8 @@ def plot_panel(sizes, errs, out_path: str, title: str = "") -> None:
         if ys.shape[0] > 1:
             n_ok = np.sum(~np.isnan(ys), axis=0)
             se = np.nanstd(ys, axis=0) / np.sqrt(np.maximum(n_ok, 1))
-            lo, hi = mean - BAND_SE * se, mean + BAND_SE * se
-            ax.fill_between(xs[mask], lo[mask], hi[mask],
-                            color=mdl.color, alpha=BAND_ALPHA, linewidth=0)
+            ax.fill_between(xs[mask], (mean - se)[mask], (mean + se)[mask],
+                            color=mdl.color, alpha=0.18, linewidth=0)
         ax.plot(xs[mask], mean[mask], marker=mdl.marker, color=mdl.color,
                 linewidth=1.8, label=mdl.name)
     ax.set_xlabel("Training Set Size")

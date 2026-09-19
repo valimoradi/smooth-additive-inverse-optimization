@@ -1,124 +1,108 @@
-# Consumer-Choice Experiment (§4.1)
+# Consumer-Choice Experiment (§4.1, Figures 1–2)
 
-A revealed-preference study. A consumer chooses a bundle `x >= 0` by solving the
-forward problem
+A revealed-preference study. A consumer chooses a bundle `x >= 0` by solving
 
 ```
-min_x  p^T x - U(x)
+max_x  U(x) - p^T x
 ```
 
-for a price vector `p` and a concave utility `U`. We observe optimal bundles for
-many price vectors and impute `U` (equivalently the convex cost `f = -U`) under
-different structural assumptions, then predict held-out bundles by re-solving the
-forward problem with the imputed objective. Error is reported as test MAPE versus
-the training-set size.
+for a price vector `p` and a concave utility `U`. From bundles observed under many price
+vectors we impute `U` under four structural classes, then predict held-out bundles by
+re-solving the forward problem with the imputed utility. Error is the test-set relative
+L2 error of the predicted bundle, averaged over 200 held-out price vectors.
 
-## The four models (a 2×2 ablation)
+## The four classes
 
-|               | no smoothness          | β-smooth            |
-| ------------- | ---------------------- | ------------------- |
-| no additivity | Convex only (Li 2019)  | Smooth              |
-| additive      | Additive               | Additive + Smooth   |
+|               | no smoothness | β-smooth          |
+| ------------- | ------------- | ----------------- |
+| no additivity | Convex only   | Smooth            |
+| additive      | Additive      | Additive + Smooth |
 
-Additivity is imposed in the inverse **solve** (per-coordinate concavity);
-smoothness adds a β-Lipschitz gradient. Combining both gives the best
-out-of-sample prediction.
+Additive classes are recovered and **predicted** good by good (per-coordinate components);
+smooth classes carry a β-Lipschitz gradient with `β*` chosen per training size by bisection
+(Model 2 of the paper) and reported for every cell in `results/`.
 
-## Formulation: no approximation
+## Data
 
-Smoothness is the only place a `β` appears, and it is **solved for**, never
-approximated by a large constant:
+Two ground-truth utilities, each drawn once:
 
-* **Convex only** and **Additive** carry **no `β` term**. Prediction uses a
-  convex-combination forward resolve from the recovered values `δ` alone.
-* **Smooth** and **Additive + Smooth** enforce a β-Lipschitz gradient; the
-  smoothness `β*` is found by bisection (the smallest feasible value — the most
-  smoothness the data admits) and reported per training size in the results CSV.
-  Prediction uses the perspective/conjugate forward resolve with `δ`, `λ`, `β*`.
+* `smooth` (Figure 1): `U(x) = 40 Σ_i log(a_i x_i + b_i)`, `a_i ~ U[1,1000]`, `b_i ~ U[2,60]`.
+* `kicks3` (Figure 2): `U(x) = 40 min{U_1, U_2, U_3}`, three coupled-log branches over the
+  same goods (nonadditive and nonsmooth). Branches 2–3 permute the slope pool of branch 1 and
+  rescale goods 2 and 4 by 1.5 in opposite directions; the interaction matrix `W` couples
+  eight pairs, seven symmetrically.
 
-## Optimal vs. perturbed (the point of the experiment)
+600 price vectors `p ~ U[8,20]^5`; 200 held out for testing, 400 form the training pool.
+Two synthetic anchors fix level and scale: `U(0) = 0` and `U(1000·1) = 1000`. Training sets
+are nested prefixes of a random ordering of the pool (rep 0 is the generated order; reps
+1–19 use seed `1000 + r`), sizes 20, 40, …, 200. Two regimes: `not-perturbed` (exact
+optimal bundles) and `perturbed` (training bundles scaled coordinatewise by
+`1 + U[-0.05, 0.05]`; the test set stays exact).
 
-Both panels come from **one generated dataset**. The unperturbed panel feeds the
-**optimal** training bundles to the solvers; the perturbed panel feeds the same
-bundles after a **±5% multiplicative perturbation of the training inputs only**.
-The held-out test set is the clean optimum in both cases, so the pair isolates
-how prediction error grows when observed decisions are noisy. The convex-hull
-baseline is nearly noise-insensitive, while the smooth models degrade most.
+The caches in `data/` hold the exact generated data used for the paper.
 
-## Configuration
+## Certificate
 
-Ground-truth utility `U(x) = sum_i log(a_i x_i + b_i)`. The data-generation draw
-order (prices, then `a`, then `b`) reproduces the paper figures.
-
-| parameter      | value                                       |
-| -------------- | ------------------------------------------- |
-| products       | 5                                           |
-| gamma          | 40                                          |
-| prices         | Uniform[8, 20]                              |
-| a, b           | Uniform[1, 1000], Uniform[2, 60]            |
-| scenarios      | 600 (200 test, the rest train pool)         |
-| anchors        | two synthetic: p=1000 → x=0, p=0 → x=1000   |
-| perturbation   | training bundles × (1 + Uniform[−.05, .05]) |
-| training sizes | 20, 40, …, 260                              |
-| seed           | 42                                          |
+All four classes use the exact inverse-optimality certificate (C8 of the paper) with a
+free witness per observation; the additive classes use its componentwise form. Stage 1
+minimizes ε at `β̄ = 1000`, `ε* = ε₀ + 1e-6`; Stage 3 is the paper's conservative selection.
 
 ## Run
 
 ```
-# Both panels (unperturbed + perturbed) from one dataset:
-python consumer_inverse_optimization.py --utilities smooth
+# Figures 1 and 2, 20 replications, all sizes (the run behind the paper; ~3 days on 10 cores)
+CONSUMER_WORKERS=10 python run_parallel.py --utilities smooth kicks3 --reps 20 \
+    --out-name paper --cert c8 --cache-dir data
 
-# Misspecification panels (non-additive, non-smooth ground truth):
-python consumer_inverse_optimization.py --utilities nonsmooth
-
-# Quick smoke test:
-python consumer_inverse_optimization.py --utilities smooth --sizes 20 60 100 --test-subset 40
-
-# Optional parallel driver (the Smooth model is slow at large N):
-python run_parallel.py
+# Rebuild the paper panels from the shipped results
+python make_paper_panels.py results figures --exclude results_excluded_cells.txt
 ```
 
-The sequential script writes figures and CSVs to `consumer_figures/` by default
-(transient, git-ignored). The parallel driver (`run_parallel.py`) writes figures to
-`figures/` and CSVs to `results/`, matching the committed canonical outputs.
+`run_parallel.py` checkpoints every cell to `results_<out-name>_c8/_cells_checkpoint.csv`
+and can be re-entered; `_cells_log.jsonl` records every solver call of every cell.
 
-Outputs: `smooth-additive-not-perturbed.pdf`, `smooth-additive-perturbed.pdf`,
-`legend.pdf`, and `results_smooth_<regime>.csv` (per-size MAPE and `β*`).
+## What is shipped in `results/`
 
-## Expected results (test MAPE %)
+The complete run: 3,193 of 3,200 cells (2 utilities × 2 regimes × 4 classes × 10 sizes ×
+20 replications). Seven Additive+Smooth cells (all `kicks3`, N ∈ {140, 180, 200}) raised
+`Stage-3 solve failed after beta escalation` deterministically and are absent. Four further
+Additive+Smooth cells (`smooth`, N = 200, listed in `results_excluded_cells.txt`) solved but
+with the Model-2 bisection terminating inside a band of MOSEK solver failures (identical
+`β* = 4.1015625` in all four, against a median of 409 for their siblings); the paper's
+figures exclude them, and `make_paper_panels.py --exclude` reproduces that choice. The
+checkpoint ships every cell, so either variant can be rebuilt.
 
-**Unperturbed (optimal training inputs):**
+`results_<utility>_<regime>_reps.csv` are the per-cell values in wide form;
+`results_<utility>_<regime>.csv` are the per-size means.
+
+## Expected results (mean test Rel-L2 over 20 replications)
+
+Figure 1, additive smooth truth:
 
 | N   | Convex only | Additive | Smooth | Additive + Smooth |
 | --- | ----------- | -------- | ------ | ----------------- |
-| 20  | 17.69       | 14.46    | 6.94   | 8.94              |
-| 100 | 12.01       | 10.32    | 6.84   | 4.97              |
-| 260 | 9.98        | 8.38     | 5.77   | 3.90              |
+| 20  | 0.275 / 0.275 | 0.114 / 0.117 | 0.120 / 0.129 | 0.093 / 0.096 |
+| 100 | 0.179 / 0.178 | 0.028 / 0.036 | 0.081 / 0.108 | 0.024 / 0.034 |
+| 200 | 0.153 / 0.151 | 0.013 / 0.023 | 0.072 / 0.109 | 0.008 / 0.023 |
 
-**Perturbed (±5% training inputs):**
+Figure 2, nonadditive nonsmooth truth:
 
 | N   | Convex only | Additive | Smooth | Additive + Smooth |
 | --- | ----------- | -------- | ------ | ----------------- |
-| 20  | 17.60       | 14.72    | 10.87  | 8.46              |
-| 100 | 11.99       | 10.73    | 10.37  | 9.52              |
-| 260 | 9.96        | 9.20     | 8.36   | 6.48              |
+| 20  | 0.326 / 0.324 | 0.159 / 0.160 | 0.190 / 0.195 | 0.148 / 0.147 |
+| 100 | 0.197 / 0.197 | 0.122 / 0.120 | 0.123 / 0.133 | 0.107 / 0.108 |
+| 200 | 0.160 / 0.159 | 0.120 / 0.121 | 0.102 / 0.113 | 0.109 / 0.108 |
 
-The Convex-only and Additive curves reproduce the published figures essentially
-exactly. The Smooth / Additive+Smooth curves are somewhat lower than the original
-fixed-β notebook because `β` is solved rather than approximated; the ordering
-(Additive+Smooth best, Convex-only worst) and the perturbation effect are
-unchanged. The Smooth (optimal) curve is mildly non-monotone at N=40/80 because
-`β*` is selected per training size — this is a genuine property of the method,
-not smoothed away.
+(not-perturbed / perturbed; Additive + Smooth at N = 200 excludes the four listed cells.)
 
 ## Layout
 
 ```
-consumer_inverse_optimization.py   # single, self-contained implementation
-run_parallel.py                    # optional multiprocess driver (same results)
-figures/                           # generated panels + optimal-vs-perturbed overlay
-results/                           # per-size MAPE + β* CSVs
-reference/
-  Log-2-additive-...csv            # ground-truth numbers behind the published figure
-  notebooks/                       # original notebooks (provenance)
+consumer_inverse_optimization.py   models, certificates, predictors, data generation, plotting
+run_parallel.py                    multiprocess driver with per-cell checkpointing (used for the paper)
+make_paper_panels.py               paper panels from a checkpoint; ±2 SE bands
+data/                              generated data caches (smooth, kicks3)
+results/                           the complete paper run: checkpoint, solver log, CSVs
+results_excluded_cells.txt         the four cells excluded from the figures, with the reason
+figures/                           the paper's four panels and legend
 ```

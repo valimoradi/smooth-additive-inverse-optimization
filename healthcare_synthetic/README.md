@@ -1,87 +1,65 @@
-# Synthetic Healthcare Inverse-Optimization Experiment (Section 4.2)
+# Synthetic Radiotherapy Experiment (§4.2, Figures 3, 4, 7)
 
-Clean, runnable implementation of the synthetic radiotherapy test bed used in the
-"Healthcare application" subsection. A ground-truth forward planner (quadratic + linear +
-exponential organ-at-risk penalties) generates plans for randomly sampled anatomies; the
-inverse-optimization method then recovers the structural penalty functions from observed
-plans and is evaluated on held-out patients across four ablation models.
+A synthetic test bed. A ground-truth forward planner with quadratic, linear and exponential
+organ-at-risk penalties produces optimal plans for randomly generated 2-D anatomies
+(55 × 55 voxel grid, 100 beamlets, Gaussian beamlet kernels). From observed plans the
+method recovers the three penalty functions under the 2 × 2 ablation (additivity ×
+smoothness) and is scored by held-out beamlet prediction error (Rel-L2) over the test
+patients that admit a feasible plan.
 
-## Models (2x2 ablation)
+## `paper_run/` — what produced the paper's results
 
-| key                | additive? | smooth? | recovery                                   | solver |
-|--------------------|-----------|---------|--------------------------------------------|--------|
-| `add_smooth`       | yes       | yes     | 3-stage (min eps -> bisect beta* -> max delta) | MOSEK  |
-| `add_lp`           | yes       | no      | 2-stage pure LP                            | GUROBI |
-| `nonadd_smooth`    | no        | yes     | 3-stage                                    | MOSEK  |
-| `nonadd_nonsmooth` | no        | no      | 2-stage, forced large beta                 | MOSEK  |
+| Item | Contents |
+| --- | --- |
+| `Cancer simulation code seed 142.ipynb` | the notebook that generated the data (seed 142), ran all four recoveries at N = 20, …, 200 and evaluated them. Cells 8–10 generate the cohort; 22/27/29/31 recover Additive+Smooth / Additive / Smooth / Convex-only; 26/28/30/32 evaluate them. |
+| `results_high_std/` (`_v3`) | recovered `δ`, `λ`, `β*`, `ε*` for Additive + Smooth |
+| `results_high_std_add_nonsmooth_lp/` (`_lp`) | Additive (LP, GUROBI) |
+| `results_high_std_non_add_smooth/` (`_vS`) | Smooth |
+| `results_high_std_non_add_nonsmooth/` (`_vNS`) | Convex only (β = 10⁵ conic program) |
+| `fig4_data/` | the four Figure 4 curves as CSV |
+| `figure_scripts/` | `make_combined_mape.py` (Figure 4), `make_true_vs_retrieved.py` (Figure 3), `make_fig3_zoom.py` (Figure 7); default paths point at the folders above |
 
-## Layout
+The generated cohort itself (`ml_data_high_std/`, 2.6 GB) is not shipped: running the
+notebook's generation cells reproduces it from seed 142.
 
-```
-healthcare_synthetic/
-  config.py          all constants, paths, seed (GLOBAL_SEED = 142)
-  forward_model.py   anatomy + dose-matrix generation, ground-truth forward solve, Z_hat
-  anchor_search.py   best/worst-case anchor search (cells 8/9)
-  generate_cohort.py cohort generation + aggregation (cells 10/13)
-  data_pipeline.py   UNIFIED 5-check filter + train/test split + anchor augmentation
-  recovery.py        inverse-optimization recovery for the 4 models (cells 22/27/29/31)
-  predict.py         imputed-forward prediction + beamlet-error CSVs (cells 26/28/30/32)
-  plots.py           combined-MAPE and true-vs-retrieved figures (cells 34/58)
-  run_generation.py  Stage A orchestrator (heavy; regenerates local data)
-  run_experiment.py  Stage B orchestrator (filter -> recovery -> predict -> plots)
-```
+Recovery uses the first-order certificate (Appendix B.2, exact at ε = 0); `ε*` is the
+Stage-1 solver residual plus 10⁻⁶ and is stored per N in `epsilon_star_N*.npy`. Stage 3 is
+the paper's conservative selection. Per class:
 
-## Reproducing the figures
+| class | Stage 1 `β̄` | Model 2 | returned `β*` |
+| --- | --- | --- | --- |
+| Additive + Smooth | 2000 | bisection on [0.01, 10], gap 0.11 | 0.0880 at every N (the lower end of the final bracket) |
+| Smooth | 2000 | bisection on [0.01, 20], gap 0.2 | 0.1662 for N ≥ 40; at N = 20 the original run returned 42.036 after solver exceptions, and Figure 4 uses the refit in `results_high_std_non_add_smooth_N20_bisection_refit/` (`β* = 0.1662`) |
+| Additive | — (LP) | — | — |
+| Convex only | fixed β = 10⁵ | — | 10⁵ |
+
+Seven of the 400 generated anatomies admit no feasible plan: three are held-out cases and
+are not scored (the test mean is over 197 patients); four are in the training pool and
+enter the recovery through their outcomes only.
+
+## Scripted re-implementation
+
+`config.py`, `forward_model.py`, `anchor_search.py`, `generate_cohort.py`, `data_pipeline.py`,
+`recovery.py`, `predict.py`, `plots.py`, `run_generation.py`, `run_experiment.py` are a
+module-by-module rewrite of the notebook:
 
 ```bash
-cd healthcare_synthetic
-# Stage A (optional): regenerate the local data from scratch (slow; seed 142).
-python run_generation.py
-
-# Stage B: produce the figures. --skip-data reuses an existing ml_data split.
-python run_experiment.py
+python run_generation.py    # Stage A: regenerate the cohort from seed 142 (slow)
+python run_experiment.py    # Stage B: filter -> recovery -> prediction -> plots
 ```
 
-Outputs:
-- `combined_plots/combined_mape_vs_training_size_OR_style.png`
-- `final_comparison_plots/true_vs_retrieved_1x3_large.png`
+Two differences from `paper_run/` to be aware of:
 
-## Data policy
+* its `nonadd_nonsmooth_lp` model (labelled "Convex only" in `run_panel.py` / `plots.py`)
+  is a max-of-tangents LP, not the β = 10⁵ conic program the paper's Figure 4 uses;
+  `nonadd_nonsmooth` is the paper's model;
+* it applies one unified validity filter to cohort and anchors (the notebook gates the
+  anchors separately; both pass, so the data are identical).
 
-The generated data (per-patient plans `patient_data_high_std/`, aggregated cohort
-`patient_data_clean_high_std/`, train/test split `ml_data_high_std/`) is large and kept
-**local only** (git-ignored). Set `SYNTH_DATA_ROOT` to point the code at a data location.
-
-The following are committed to the repository for reproducibility:
-- `results_high_std/`, `results_high_std_add_nonsmooth_lp/`, etc. — recovered parameters
-  (`.npy` files, small) for all four models at N=20–400.
-- `add_smooth_outputs/`, `add_nonsmooth_lp_outputs/`, etc. — prediction-error CSVs for
-  all four models at N=20–400. The paper figure uses N=20–400.
-
-Figure output directories (`combined_plots/`, `final_comparison_plots/`) are git-ignored
-and regenerated locally by `run_experiment.py`. The canonical paper figures are in
-`submission/figures/` at the repo root.
-
-## Notes on faithfulness / fixes
-
-This code was verified to reproduce the paper's cached results, with two corrections:
-
-1. **Unified filter.** A single 5-check validity filter (`check_patient_validity`:
-   duplicate-anatomy, micro-organ, 3-sigma size outlier, PTV-OAR overlap, bladder >= 0.5*PTV)
-   is the sole data gate, applied to BOTH the cohort and the two anchors. In the original
-   notebook the cohort used the 5-check while the anchors only passed a 2-check anatomy gate;
-   the anchors pass the 5-check, so the produced `ml_data` is identical.
-
-2. **`add_lp` normalization gauge.** `U_MAX = 1000` (matching the paper's parameters).
-   `delta` and `lambda` scale linearly with `U_MAX`, so it is a free gauge and predictions
-   are invariant to it.
-
-3. **`add_smooth` small-N robustness.** MOSEK 11 throws on the small (e.g. N=20) stage-3
-   problem at 1e-6 tolerances; the recovery retries the same beta at 1e-5, which solves it
-   at the natural smallest-feasible beta* (no escalation needed). Larger N still solve at
-   1e-6 first, so their parameters reproduce exactly.
+The `*_outputs/` folders hold this pipeline's prediction CSVs. The paper's numbers are the
+ones in `paper_run/`.
 
 ## Requirements
 
-Python 3, `numpy`, `scipy`, `cvxpy`, `pandas`, `matplotlib`, `scikit-learn`, and licensed
-solvers **MOSEK** and **GUROBI**.
+Python 3, `numpy`, `scipy`, `cvxpy`, `pandas`, `matplotlib`, `scikit-learn`; **MOSEK** for
+the smooth classes and the Convex-only conic program, **GUROBI** for the additive LP.
