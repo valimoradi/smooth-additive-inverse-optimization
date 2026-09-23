@@ -46,6 +46,8 @@ The caches in `data/` hold the exact generated data used for the paper.
 All four classes use the exact inverse-optimality certificate (C8 of the paper) with a
 free witness per observation; the additive classes use its componentwise form. Stage 1
 minimizes ε at `β̄ = 1000`, `ε* = ε₀ + 1e-6`; Stage 3 is the paper's conservative selection.
+If MOSEK does not return an optimal Stage-1 solution at 1e-6, the same program is re-solved
+once at 1e-5; if that also fails, the cell fails.
 
 ## Run
 
@@ -55,7 +57,7 @@ CONSUMER_WORKERS=10 python run_parallel.py --utilities smooth kicks3 --reps 20 \
     --out-name paper --cert c8 --cache-dir data
 
 # Rebuild the paper panels from the shipped results
-python make_paper_panels.py results figures --exclude results_excluded_cells.txt
+python make_paper_panels.py results figures
 ```
 
 `run_parallel.py` checkpoints every cell to `results_<out-name>_c8/_cells_checkpoint.csv`
@@ -63,14 +65,12 @@ and can be re-entered; `_cells_log.jsonl` records every solver call of every cel
 
 ## What is shipped in `results/`
 
-The complete run: 3,193 of 3,200 cells (2 utilities × 2 regimes × 4 classes × 10 sizes ×
-20 replications). Seven Additive+Smooth cells (all `kicks3`, N ∈ {140, 180, 200}) raised
-`Stage-3 solve failed after beta escalation` deterministically and are absent. Four further
-Additive+Smooth cells (`smooth`, N = 200, listed in `results_excluded_cells.txt`) solved but
-with the Model-2 bisection terminating inside a band of MOSEK solver failures (identical
-`β* = 4.1015625` in all four, against a median of 409 for their siblings); the paper's
-figures exclude them, and `make_paper_panels.py --exclude` reproduces that choice. The
-checkpoint ships every cell, so either variant can be rebuilt.
+The complete run: 3,199 of 3,200 cells (2 utilities × 2 regimes × 4 classes × 10 sizes ×
+20 replications). One Additive+Smooth cell (`smooth`, not-perturbed, N = 200, rep 16) is absent:
+its minimum-ε solve (Model 1) returned no optimal solution from MOSEK at 1e-6 or at the 1e-5
+re-solve, and the cell raises rather than continuing with a substitute ε. Twelve Additive+Smooth
+cells were solved again after that change; `_cells_log.jsonl` holds the first attempt of each and
+appends the second.
 
 `results_<utility>_<regime>_reps.csv` are the per-cell values in wide form;
 `results_<utility>_<regime>.csv` are the per-size means.
@@ -83,7 +83,7 @@ Figure 1, additive smooth truth:
 | --- | ----------- | -------- | ------ | ----------------- |
 | 20  | 0.275 / 0.275 | 0.114 / 0.117 | 0.120 / 0.129 | 0.093 / 0.096 |
 | 100 | 0.179 / 0.178 | 0.028 / 0.036 | 0.081 / 0.108 | 0.024 / 0.034 |
-| 200 | 0.153 / 0.151 | 0.013 / 0.023 | 0.072 / 0.109 | 0.008 / 0.023 |
+| 200 | 0.153 / 0.151 | 0.013 / 0.023 | 0.072 / 0.109 | 0.008 / 0.020 |
 
 Figure 2, nonadditive nonsmooth truth:
 
@@ -91,9 +91,9 @@ Figure 2, nonadditive nonsmooth truth:
 | --- | ----------- | -------- | ------ | ----------------- |
 | 20  | 0.326 / 0.324 | 0.159 / 0.160 | 0.190 / 0.195 | 0.148 / 0.147 |
 | 100 | 0.197 / 0.197 | 0.122 / 0.120 | 0.123 / 0.133 | 0.107 / 0.108 |
-| 200 | 0.160 / 0.159 | 0.120 / 0.121 | 0.102 / 0.113 | 0.109 / 0.108 |
+| 200 | 0.160 / 0.159 | 0.120 / 0.121 | 0.102 / 0.113 | 0.107 / 0.107 |
 
-(not-perturbed / perturbed; Additive + Smooth at N = 200 excludes the four listed cells.)
+(not-perturbed / perturbed; Additive + Smooth, smooth not-perturbed, N = 200 averages 19 replications.)
 
 ## Layout
 
@@ -103,6 +103,5 @@ run_parallel.py                    multiprocess driver with per-cell checkpointi
 make_paper_panels.py               paper panels from a checkpoint; ±2 SE bands
 data/                              generated data caches (smooth, kicks3)
 results/                           the complete paper run: checkpoint, solver log, CSVs
-results_excluded_cells.txt         the four cells excluded from the figures, with the reason
 figures/                           the paper's four panels and legend
 ```

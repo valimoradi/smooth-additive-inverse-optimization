@@ -658,7 +658,7 @@ rep,training_size,model,RelL2,beta_star
 5,140,Additive+Smooth,0.1342,632.3242
 5,160,Additive+Smooth,0.1320,557.1289
 5,180,Additive+Smooth,0.1136,799.8047
-5,200,Additive+Smooth,,
+5,200,Additive+Smooth,0.1018,678.2227
 6,20,Additive+Smooth,0.1767,66.2109
 6,40,Additive+Smooth,0.1287,718.2617
 6,60,Additive+Smooth,0.1189,687.5000
@@ -717,7 +717,7 @@ rep,training_size,model,RelL2,beta_star
 11,120,Additive+Smooth,0.1172,452.6367
 11,140,Additive+Smooth,0.1071,749.0234
 11,160,Additive+Smooth,0.0852,21.9727
-11,180,Additive+Smooth,,
+11,180,Additive+Smooth,0.0845,21.4844
 11,200,Additive+Smooth,0.0835,21.9727
 12,20,Additive+Smooth,0.1861,25.1953
 12,40,Additive+Smooth,0.1059,14.6484
@@ -735,7 +735,7 @@ rep,training_size,model,RelL2,beta_star
 13,80,Additive+Smooth,0.1123,5.8594
 13,100,Additive+Smooth,0.0857,21.9727
 13,120,Additive+Smooth,0.0851,45.8984
-13,140,Additive+Smooth,,
+13,140,Additive+Smooth,0.0855,45.8984
 13,160,Additive+Smooth,0.1098,5.2734
 13,180,Additive+Smooth,0.1097,5.2734
 13,200,Additive+Smooth,0.1182,5.8594
@@ -748,7 +748,7 @@ rep,training_size,model,RelL2,beta_star
 14,140,Additive+Smooth,0.1150,786.6211
 14,160,Additive+Smooth,0.0874,14.6484
 14,180,Additive+Smooth,0.0870,14.6484
-14,200,Additive+Smooth,,
+14,200,Additive+Smooth,0.0872,14.6484
 15,20,Additive+Smooth,0.1139,395.9961
 15,40,Additive+Smooth,0.1258,29.2969
 15,60,Additive+Smooth,0.0847,29.2969

@@ -718,7 +718,7 @@ rep,training_size,model,RelL2,beta_star
 11,140,Additive+Smooth,0.0038,8.3008
 11,160,Additive+Smooth,0.0128,8.2031
 11,180,Additive+Smooth,0.0027,8.3008
-11,200,Additive+Smooth,0.0815,4.1016
+11,200,Additive+Smooth,0.0092,9.3750
 12,20,Additive+Smooth,0.0777,8.7891
 12,40,Additive+Smooth,0.0496,8.7891
 12,60,Additive+Smooth,0.0433,7.6172
@@ -768,7 +768,7 @@ rep,training_size,model,RelL2,beta_star
 16,140,Additive+Smooth,0.0269,8.2031
 16,160,Additive+Smooth,0.0036,7.8125
 16,180,Additive+Smooth,0.0034,7.8125
-16,200,Additive+Smooth,0.0916,4.1016
+16,200,Additive+Smooth,,
 17,20,Additive+Smooth,0.1118,8.7891
 17,40,Additive+Smooth,0.0513,9.3750
 17,60,Additive+Smooth,0.0428,9.3750
@@ -788,7 +788,7 @@ rep,training_size,model,RelL2,beta_star
 18,140,Additive+Smooth,0.0126,8.7891
 18,160,Additive+Smooth,0.0126,8.7891
 18,180,Additive+Smooth,0.0128,8.2031
-18,200,Additive+Smooth,0.0753,4.1016
+18,200,Additive+Smooth,0.0118,8.7891
 19,20,Additive+Smooth,0.0876,8.7891
 19,40,Additive+Smooth,0.0569,9.3750
 19,60,Additive+Smooth,0.0451,9.3750

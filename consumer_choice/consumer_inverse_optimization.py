@@ -190,7 +190,7 @@ def _log_note(**info) -> None:
 # ======================================================================
 # Solver wrapper (MOSEK only [S1])
 # ======================================================================
-def _solve(prob: cp.Problem, use_params: bool = True) -> bool:
+def _solve(prob: cp.Problem, use_params: bool = True, tol: float = None) -> bool:
     """Solve in place; return True on (near-)optimal status.
 
     Layered fallback: MOSEK at high precision, then MOSEK at default tolerances
@@ -199,7 +199,13 @@ def _solve(prob: cp.Problem, use_params: bool = True) -> bool:
     must retry on bad status, not only on exceptions.
     """
     attempts = []
-    if use_params:
+    if tol is not None:                          # [W7] one explicit tolerance (see _min_epsilon)
+        params = dict(CFG.mosek_params)
+        for k in ("MSK_DPAR_INTPNT_CO_TOL_REL_GAP", "MSK_DPAR_INTPNT_CO_TOL_PFEAS",
+                  "MSK_DPAR_INTPNT_CO_TOL_DFEAS"):
+            params[k] = tol
+        attempts.append(dict(solver=cp.MOSEK, verbose=False, mosek_params=params))
+    elif use_params:
         attempts.append(dict(solver=cp.MOSEK, verbose=False, mosek_params=CFG.mosek_params))
     attempts.append(dict(solver=cp.MOSEK, verbose=False,    # MOSEK default tolerances
                          mosek_params={k: v for k, v in CFG.mosek_params.items()
@@ -646,11 +652,20 @@ def _min_epsilon(Z, P, additive: bool) -> float:
     else:
         cons = _smooth_constraints(Z, P, beta_inv, eps, delta, lamb, lam_opt)
     _log("model1", beta=CFG.beta_init)                          # [W6d] record only
-    if _solve(cp.Problem(cp.Minimize(eps), cons)):
-        _log_note(eps0=None if eps.value is None else float(eps.value))   # [W6d]
-        return float(eps.value) + 1e-6          # [W4] epsilon* = epsilon0 + 1e-6
-    _log_note(fallback="min-eps solve failed; eps = 1.0")      # [W6d]
-    return 1.0
+    prob = cp.Problem(cp.Minimize(eps), cons)
+    solved = _solve(prob)
+    if not solved:
+        # [W7] On a few large additive-smooth draws MOSEK's interior point stalls on this
+        # program at 1e-6 (status UNKNOWN, gap frozen for the last iterations). The same
+        # program is re-solved once at 1e-5, where it returns optimal (e.g. smooth,
+        # not-perturbed, N=200, rep 11: eps0 = 4.1e-05). There is no substitute value:
+        # if the re-solve also fails, the cell fails.
+        _log_note(retry="min-eps solve not optimal at configured tolerance; re-solve at 1e-5")
+        solved = _solve(prob, tol=1.0e-5)
+    if not solved:
+        raise RuntimeError("Model 1 (minimum epsilon) did not solve")
+    _log_note(eps0=None if eps.value is None else float(eps.value))   # [W6d]
+    return float(eps.value) + 1e-6              # [W4] epsilon* = epsilon0 + 1e-6
 
 
 def _beta_bisection(Z, P, eps_val, additive: bool, gap_tol: float) -> float:
