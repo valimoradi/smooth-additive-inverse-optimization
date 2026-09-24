@@ -126,7 +126,10 @@ RECOVERY = {
         "BISECT_GAP_TOL": 0.2, "BISECT_BETA_LOW": 0.01, "BISECT_BETA_INIT": 20.0,
         "SOLVER": "MOSEK", "MOSEK_TOL": 1e-5,
     },
-    # Non-additive non-smooth: 2-stage with forced large beta, MOSEK (APPROXIMATION of convex-only).
+    # Non-additive non-smooth = the Convex-only class of Figure 4. It is fitted with the same conic program and
+    # solver as the smooth classes at a fixed large beta = 1e5, an approximation of beta = infinity that keeps the
+    # solver and the method the same across classes (the Additive class is the exact beta = infinity LP and predicts
+    # with its tangent lines). 2-stage, MOSEK.
     "nonadd_nonsmooth": {
         "U_MAX": 10000.0, "BETA_NON_SMOOTH": 100000.0, "EPSILON_TOL": 1e-6,
         "SOLVER": "MOSEK", "MOSEK_TOL_S1": 1e-6, "MOSEK_TOL_S2": 1e-5,

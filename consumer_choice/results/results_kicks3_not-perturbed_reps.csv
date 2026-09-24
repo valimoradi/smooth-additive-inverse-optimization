@@ -284,7 +284,7 @@ rep,training_size,model,RelL2,beta_star
 8,60,Additive,0.1388,
 8,80,Additive,0.1224,
 8,100,Additive,0.1132,
-8,120,Additive,0.0929,
+8,120,Additive,,
 8,140,Additive,0.1079,
 8,160,Additive,0.1076,
 8,180,Additive,0.1040,

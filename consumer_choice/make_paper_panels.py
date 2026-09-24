@@ -6,7 +6,7 @@ consumer_inverse_optimization.py, copied verbatim except for two deliberate diff
     production plot_panel draws +-1 SE), and
   * the standard deviation uses ddof=1 (sample SE), not numpy's default ddof=0.
 Aggregation is nanmean/nanstd with a per-point replication count, so cells missing from the
-checkpoint (the 7 deterministic Stage-3 failures) simply reduce n at that point.
+checkpoint (the two fits that did not solve) simply reduce n at that point.
 
 usage: python make_paper_panels_2se.py RES_DIR OUT_DIR [--exclude PATH]
   --exclude  a text file of cells to drop, one per line: utility,regime,size,rep,model

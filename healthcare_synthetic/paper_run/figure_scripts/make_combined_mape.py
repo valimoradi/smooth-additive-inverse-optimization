@@ -1,10 +1,9 @@
 """Regenerate Fig 4 (combined beamlet-prediction error vs N) capped at N=200.
 
 Data source: the CSVs extracted from the canonical additive-smooth repo at commit c589d16
-("Switch prediction metric to Rel-L2") and frozen under figures/fig4_data/, with one change
-(2026-09-12): the Smooth (nonadditive) N=20 row is the refit at the bisection beta 0.166171875
-(142 copy/results_high_std_non_add_smooth_N20_bisection_refit). The saved beta*=42.036 for that
-point came from MOSEK exceptions counted as infeasible. Only the N=300,400 tail is dropped (the accuracy plateau sets in
+("Switch prediction metric to Rel-L2") and frozen under figures/fig4_data/. Every point is the
+procedure's own result (the Smooth N=20 point uses the bisection's beta* = 42.036 as returned).
+Only the N=300,400 tail is dropped (the accuracy plateau sets in
 by ~N=60, so the 200-400 stretch added width without information -- see Fig 3, now at
 N=20,40,60). Convex-only = the approximate (max-forced) evaluator, matching the paper.
 """

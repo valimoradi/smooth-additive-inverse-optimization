@@ -10,7 +10,7 @@ The repository is organized by the paper's three experiments (Section 4).
 
 | Directory | Paper | What is here |
 | --- | --- | --- |
-| [`consumer_choice/`](consumer_choice/) | §4.1, Figures 1–2 | code, data caches, the full replicated run (3,193 cells) and the figures built from it |
+| [`consumer_choice/`](consumer_choice/) | §4.1, Figures 1–2 | code, data caches, the full replicated run (3,198 cells) and the figures built from it |
 | [`healthcare_synthetic/`](healthcare_synthetic/) | §4.2, Figures 3, 4, 7 | the notebook that produced the paper's results, its recovered parameters, and the figure scripts; plus a scripted re-implementation |
 | [`portpy_clinical/`](portpy_clinical/) | §4.3, Figures 5–6, Table 3 | code, the scripts that produced the published runs, the recovered parameters (N = 3–6) and the prediction outputs |
 

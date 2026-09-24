@@ -65,10 +65,12 @@ and can be re-entered; `_cells_log.jsonl` records every solver call of every cel
 
 ## What is shipped in `results/`
 
-The complete run: 3,199 of 3,200 cells (2 utilities × 2 regimes × 4 classes × 10 sizes ×
-20 replications). One Additive+Smooth cell (`smooth`, not-perturbed, N = 200, rep 16) is absent:
-its minimum-ε solve (Model 1) returned no optimal solution from MOSEK at 1e-6 or at the 1e-5
-re-solve, and the cell raises rather than continuing with a substitute ε. Twelve Additive+Smooth
+The complete run: 3,198 of 3,200 cells (2 utilities × 2 regimes × 4 classes × 10 sizes ×
+20 replications). Two cells are absent because a solve failed, and a failed solve fails its cell
+rather than continuing with a substitute value: one Additive+Smooth cell (`smooth`, not-perturbed,
+N = 200, rep 16), whose minimum-ε solve (Model 1) returned no optimal solution from MOSEK at 1e-6 or
+at the 1e-5 re-solve, and one Additive cell (`kicks3`, not-perturbed, N = 120, rep 8), whose
+selection solve (Model 3) did not solve. Twelve Additive+Smooth
 cells were solved again after that change; `_cells_log.jsonl` holds the first attempt of each and
 appends the second.
 

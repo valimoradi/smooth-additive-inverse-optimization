@@ -435,12 +435,8 @@ class Recovered:
 # Inverse solvers (one per model). Two stages: minimise epsilon, then
 # minimise sum(delta) at the fixed epsilon*. Smooth models add a beta search.
 # ======================================================================
-# On exact (unperturbed) data the epsilon-min problem occasionally fails (the
-# optimum sits on the boundary at epsilon ~ 0). When it does, we fall back to a
-# short sweep of small fixed epsilons -- the true value is ~0 there -- and take
-# the first one that lets Stage 2 solve. The normal path (min-eps succeeds) is
-# tried first, so the recovered objective is unchanged when there is no failure.
-_EPS_FALLBACK = (1e-6, 1e-5, 1e-4, 1e-3, 1e-2)
+# [W8] No substitute values: if Model 1 (minimum epsilon) or Model 3 (selection) does not
+# solve, the cell fails. Model 3 runs once, at epsilon* = epsilon0 + 1e-6 [W4].
 
 
 def _c8_rows(Z, P, beta_inv, eps_expr, delta, delta_g, lamb):
@@ -504,25 +500,20 @@ def solve_convex_only(Z: np.ndarray, P: np.ndarray) -> Recovered:
     d1 = cp.Variable(m)
     l1 = cp.Variable((m, n), nonneg=True)
     eps = cp.Variable(nonneg=True)
-    eps_star = (float(eps.value)
-                if _solve(cp.Problem(cp.Minimize(eps),
-                                     build(d1, l1, eps, CFG.delta_anchor_stage1)))
-                else None)
+    if not _solve(cp.Problem(cp.Minimize(eps), build(d1, l1, eps, CFG.delta_anchor_stage1))):
+        raise RuntimeError("convex-only Model 1 (minimum epsilon) did not solve")   # [W8]
+    eps_star = float(eps.value)
     _log_note(eps0=eps_star)                                    # [W6d] record only
 
-    # Stage 2: minimise sum(delta), trying epsilon* first then the fallback sweep.
-    for eps_try in ([eps_star + 1e-6] if eps_star is not None else []) + list(_EPS_FALLBACK):  # [W4]
-        d2 = cp.Variable(m)
-        l2 = cp.Variable((m, n), nonneg=True)
-        _log("model3", eps=eps_try)                              # [W6d] record only: eps in this program
-        if _solve(cp.Problem(cp.Minimize(cp.sum(d2)),  # [W2] conservative: min sum U
-                             build(d2, l2, eps_try, CFG.delta_anchor_stage2))) \
-                and d2.value is not None:
-            return Recovered(d2.value, l2.value, None, eps_try)
-    if eps_star is not None and d1.value is not None:
-        _log("fallback", path="Model 3 failed at every eps; Stage-1 solution returned")   # [W6d]
-        return Recovered(d1.value, l1.value, None, eps_star)
-    raise RuntimeError("convex-only solve failed (Stage-1 and epsilon sweep)")
+    # Stage 2: minimise sum(delta) at epsilon* = epsilon0 + 1e-6 [W4].
+    eps_try = eps_star + 1e-6
+    d2 = cp.Variable(m)
+    l2 = cp.Variable((m, n), nonneg=True)
+    _log("model3", eps=eps_try)                                  # [W6d] record only: eps in this program
+    if _solve(cp.Problem(cp.Minimize(cp.sum(d2)),  # [W2] conservative: min sum U
+                         build(d2, l2, eps_try, CFG.delta_anchor_stage2))) and d2.value is not None:
+        return Recovered(d2.value, l2.value, None, eps_try)
+    raise RuntimeError("convex-only Model 3 did not solve")     # [W8]
 
 
 def solve_additive(Z: np.ndarray, P: np.ndarray) -> Recovered:
@@ -546,32 +537,27 @@ def solve_additive(Z: np.ndarray, P: np.ndarray) -> Recovered:
             cons.append(delta[nxt, k] + cp.multiply(lamb[nxt, k], dz) >= delta[cur, k])
         return cons
 
-    # Stage 1: minimise epsilon (ill-conditioned on exact data -> may fail).
+    # Stage 1: minimise epsilon.
     _log("model1")                                              # [W6d] record only
     d1 = cp.Variable((m, n))
     dg1 = cp.Variable(m)
     l1 = cp.Variable((m, n), nonneg=True)
     eps = cp.Variable(nonneg=True)
-    eps_star = (float(eps.value)
-                if _solve(cp.Problem(cp.Minimize(eps),
-                                     build(d1, dg1, l1, eps, CFG.delta_anchor_stage1)))
-                else None)
+    if not _solve(cp.Problem(cp.Minimize(eps), build(d1, dg1, l1, eps, CFG.delta_anchor_stage1))):
+        raise RuntimeError("additive Model 1 (minimum epsilon) did not solve")      # [W8]
+    eps_star = float(eps.value)
     _log_note(eps0=eps_star)                                    # [W6d] record only
 
-    # Stage 2: minimise sum(delta), epsilon* first then the fallback sweep.
-    for eps_try in ([eps_star] if eps_star is not None else []) + list(_EPS_FALLBACK):
-        d2 = cp.Variable((m, n))
-        dg2 = cp.Variable(m)
-        l2 = cp.Variable((m, n), nonneg=True)
-        _log("model3", eps=eps_try + 1e-6)                       # [W6d] record only: eps in this program
-        if _solve(cp.Problem(cp.Minimize(cp.sum(dg2)),  # [W2] conservative: min sum U
-                             build(d2, dg2, l2, eps_try + 1e-6, CFG.delta_anchor_stage2))) \
-                and dg2.value is not None:
-            return Recovered(dg2.value, l2.value, None, eps_try, delta_comp=d2.value)  # [W1]
-    if eps_star is not None and dg1.value is not None:
-        _log("fallback", path="Model 3 failed at every eps; Stage-1 solution returned")   # [W6d]
-        return Recovered(dg1.value, l1.value, None, eps_star, delta_comp=d1.value)  # [W1]
-    raise RuntimeError("additive solve failed (Stage-1 and epsilon sweep)")
+    # Stage 2: minimise sum(delta) at epsilon* = epsilon0 + 1e-6 [W4].
+    d2 = cp.Variable((m, n))
+    dg2 = cp.Variable(m)
+    l2 = cp.Variable((m, n), nonneg=True)
+    _log("model3", eps=eps_star + 1e-6)                          # [W6d] record only: eps in this program
+    if _solve(cp.Problem(cp.Minimize(cp.sum(dg2)),  # [W2] conservative: min sum U
+                         build(d2, dg2, l2, eps_star + 1e-6, CFG.delta_anchor_stage2))) \
+            and dg2.value is not None:
+        return Recovered(dg2.value, l2.value, None, eps_star, delta_comp=d2.value)  # [W1]
+    raise RuntimeError("additive Model 3 did not solve")        # [W8]
 
 
 def _smooth_constraints(Z, P, beta_inv, eps_expr, delta, lamb, lam_opt):
@@ -676,8 +662,7 @@ def _beta_bisection(Z, P, eps_val, additive: bool, gap_tol: float) -> float:
             if _feasible_at_beta(Z, P, eps_val, high, additive):
                 break
         else:
-            _log("fallback", path="no beta bracket up to 32 * beta_init; beta0 = beta_init")  # [W6d]
-            return CFG.beta_init
+            raise RuntimeError("Model 2: no feasible beta up to 32 * beta_init")   # [W8]
     low = 0.0
     for _ in range(15):
         if high - low < gap_tol:
